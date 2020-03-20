@@ -5,6 +5,12 @@
 # Everything related to idea
 .idea/
 
+# All target classes
+target/
+
+# All iml files
+*.iml
+
 # CMake
 cmake-build-*/
 
