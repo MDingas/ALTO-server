@@ -5,7 +5,6 @@
 # Everything related to idea
 .idea/
 
-
 # CMake
 cmake-build-*/
 
