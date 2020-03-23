@@ -1,15 +1,18 @@
-package com.example.restservice.dto;
+package com.example.restservice.dto.networkmap;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class IpAggregationsDTO {
 
     @JsonProperty("ipv4")
+    @Field("ipv4")
     private String[] ipv4Aggregations;
 
     @JsonProperty("ipv6")
+    @Field("ipv6")
     private String[] ipv6Aggregations;
 
     public IpAggregationsDTO() {

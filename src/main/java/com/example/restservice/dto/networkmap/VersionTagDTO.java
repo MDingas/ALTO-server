@@ -1,6 +1,7 @@
-package com.example.restservice.dto;
+package com.example.restservice.dto.networkmap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotBlank;
 
@@ -8,10 +9,12 @@ public class VersionTagDTO {
 
     @NotBlank
     @JsonProperty("resource-id")
+    @Field("resource-id")
     private String resourceId;
 
     @NotBlank
     @JsonProperty("tag")
+    @Field("tag")
     private String tag;
 
     public VersionTagDTO() {

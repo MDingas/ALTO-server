@@ -26,15 +26,26 @@ public class BootstrapNetworkMaps implements CommandLineRunner {
     }
 
     private static NetworkMapDTO generateNetworkMapDTO(int seed) {
+        Random random = new Random(seed);
         String resourceId = "resource" + seed;
         String tag = "tag" + seed;
         MetaDataDTO metaDataDTO = new MetaDataDTO(new VersionTagDTO(resourceId, tag));
 
-        String[] ipv4Addresses = {"10.0.0." + seed, "192.168.1." + seed, "232.20.31." + seed};
-        String[] ipv6Addresses = null;
+        String[] ipv4Addresses = new String[4];
+        ipv4Addresses[0] = String.format("%s.%s.%s.%s/24", random.nextInt(255), random.nextInt(255), random.nextInt(255), random.nextInt(255));
+        ipv4Addresses[1] = String.format("%s.%s.%s.%s/24", random.nextInt(255), random.nextInt(255), random.nextInt(255), random.nextInt(255));
+        ipv4Addresses[2] = String.format("%s.%s.%s.%s/24", random.nextInt(255), random.nextInt(255), random.nextInt(255), random.nextInt(255));
+        ipv4Addresses[3] = String.format("%s.%s.%s.%s/24", random.nextInt(255), random.nextInt(255), random.nextInt(255), random.nextInt(255));
+
+        String[] ipv6Addresses = new String[1];
+        ipv6Addresses[0] = "::/0";
+
         IpAggregationsDTO ipAggregationsDTO = new IpAggregationsDTO(ipv4Addresses, ipv6Addresses);
+
         Map<String, IpAggregationsDTO> ipAggregations = new HashMap<>();
-        ipAggregations.put("pid" + seed, ipAggregationsDTO);
+        for (int i = 0; i < random.nextInt(5); i++) {
+            ipAggregations.put("pid" + i, ipAggregationsDTO);
+        }
 
         return new NetworkMapDTO(metaDataDTO, ipAggregations);
     }
