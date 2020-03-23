@@ -1,6 +1,9 @@
 package com.example.restservice.bootstrap;
 
-import com.example.restservice.dto.*;
+import com.example.restservice.dto.networkmap.IpAggregationsDTO;
+import com.example.restservice.dto.networkmap.MetaDataDTO;
+import com.example.restservice.dto.networkmap.NetworkMapDTO;
+import com.example.restservice.dto.networkmap.VersionTagDTO;
 import com.example.restservice.repository.NetworkMapRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-@Component
+//@Component
 public class BootstrapNetworkMaps implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(BootstrapNetworkMaps.class);
