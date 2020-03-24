@@ -1,6 +1,8 @@
 package com.example.restservice.bootstrap;
 
+import com.example.restservice.dto.costmap.CostMapDTO;
 import com.example.restservice.dto.networkmap.NetworkMapDTO;
+import com.example.restservice.repository.CostMapRepository;
 import com.example.restservice.repository.NetworkMapRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -18,58 +20,68 @@ import java.util.List;
 public class BootstrapFromResourcesDirectory implements CommandLineRunner {
     private static final String RESOURCES_DICECTORY = "resources";
     private static final String NETWORKMAPS_DIRECTORY = RESOURCES_DICECTORY + "/networkmaps";
+    private static final String COSTMAP_DIRECTORY = RESOURCES_DICECTORY + "/costmaps";
+
     private static final Logger logger = LoggerFactory.getLogger(BootstrapFromResourcesDirectory.class);
 
     private NetworkMapRepository networkMapRepository;
+    private CostMapRepository costMapRepository;
+
     private ObjectMapper objectMapper;
 
-    private List<NetworkMapDTO> networkMapDTOList;
-
     @Autowired
-    public BootstrapFromResourcesDirectory(NetworkMapRepository networkMapRepository, ObjectMapper objectMapper) {
+    public BootstrapFromResourcesDirectory(NetworkMapRepository networkMapRepository, CostMapRepository costMapRepository, ObjectMapper objectMapper) {
         this.networkMapRepository = networkMapRepository;
+        this.costMapRepository = costMapRepository;
         this.objectMapper = objectMapper;
-        this.networkMapDTOList = new ArrayList<>();
-    }
-
-    private void loadFileAsNetworkMap(File file) {
-        logger.info("Loading network map " + file.getName());
-        try {
-            NetworkMapDTO networkMapDTO = objectMapper.readValue(file, NetworkMapDTO.class);
-            networkMapDTOList.add(networkMapDTO);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
-
-    private void loadFilesAsNetworkMaps(File[] files) {
-        for (File file : files) {
-            if (file.isDirectory()) {
-                logger.info("Stepping into subdirectory " + file.getAbsolutePath());
-                loadFilesAsNetworkMaps(file.listFiles());
-            } else {
-                loadFileAsNetworkMap(file);
-            }
-        }
-    }
-
-    private void loadNetworkMaps(String baseDirectory) {
-        logger.info("Loading network maps");
-        loadFilesAsNetworkMaps(new File(baseDirectory).listFiles());
-    }
-
-    private void saveResources() {
-        logger.info("Saving all resources");
-        for (NetworkMapDTO networkMapDTO : networkMapDTOList) {
-            logger.info("Saving " + networkMapDTO.getMetaDataDTO().getVersionTagDTO().getResourceId());
-            networkMapRepository.insert(networkMapDTO);
-        }
     }
 
     @Override
     public void run(String... args) throws Exception {
         logger.info("Bootstrapping from resources directory");
-        loadNetworkMaps(NETWORKMAPS_DIRECTORY);
-        saveResources();
+
+        logger.info("Loading network maps");
+        List<NetworkMapDTO> networkMapDTOList = loadFilesAsObjectsByDepthSearch(NETWORKMAPS_DIRECTORY, NetworkMapDTO.class);
+
+        logger.info("Loading cost maps");
+        List<CostMapDTO> costMapDTOList = loadFilesAsObjectsByDepthSearch(COSTMAP_DIRECTORY, CostMapDTO.class);
+
+        logger.info("Saving network maps");
+        networkMapRepository.insert(networkMapDTOList);
+
+        logger.info("Saving cost maps");
+        costMapRepository.insert(costMapDTOList);
+    }
+
+    private <T> List<T> loadFilesAsObjectsByDepthSearch(String baseDirectory, Class<T> objectClass) {
+        File[] fileList = new File(baseDirectory).listFiles();
+        return loadFilesAsObjects(fileList, objectClass);
+    }
+
+
+    private <T> List<T> loadFilesAsObjects(File[] fileList, Class <T> objectClass) {
+        List<T> loadedResources = new ArrayList<>();
+        for (File file : fileList) {
+            if (file.isDirectory()) {
+                List<T> recursiveLoadedResources = loadFilesAsObjects(file.listFiles(), objectClass);
+                loadedResources.addAll(recursiveLoadedResources);
+            } else {
+                T resource = loadFileAsObject(file, objectClass);
+                loadedResources.add(resource);
+            }
+        }
+
+        return loadedResources;
+    }
+
+    private <T> T loadFileAsObject(File file, Class<T> objectClass) {
+        T resource = null;
+        try {
+            resource = objectMapper.readValue(file, objectClass);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return resource;
     }
 }
