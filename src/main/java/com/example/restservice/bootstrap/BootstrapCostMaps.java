@@ -2,18 +2,17 @@ package com.example.restservice.bootstrap;
 
 import com.example.restservice.dto.costmap.CostMapDTO;
 import com.example.restservice.dto.costmap.CostTypeDTO;
-import com.example.restservice.dto.networkmap.MetaDataDTO;
-import com.example.restservice.dto.networkmap.VersionTagDTO;
+import com.example.restservice.dto.costmap.MetaDataDTO;
+import com.example.restservice.dto.costmap.VersionTagDTO;
 import com.example.restservice.repository.CostMapRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-@Component
+//@Component
 public class BootstrapCostMaps implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(BootstrapNetworkMaps.class);
 
@@ -44,16 +43,17 @@ public class BootstrapCostMaps implements CommandLineRunner {
         Random random = new Random(seed);
         String resourceId = "resource" + seed;
         String tag = "tag" + seed;
-        MetaDataDTO metaDataDTO = new MetaDataDTO(new VersionTagDTO(resourceId, tag));
-
         CostTypeDTO costTypeDTO = generateCostTypeDTO(random.nextInt(10));
+
+        MetaDataDTO metaDataDTO = new MetaDataDTO(new VersionTagDTO(resourceId, tag), null, costTypeDTO);
+
 
         Map<String, Integer> costMapping = new HashMap<>();
         costMapping.put("pid2", 10);
         Map<String, Map<String, Integer>> costMappings = new HashMap<>();
         costMappings.put("pid1", costMapping);
 
-        return new CostMapDTO(metaDataDTO, null, costTypeDTO, costMappings);
+        return new CostMapDTO(metaDataDTO, costMappings);
     }
 
     private static List<CostMapDTO> generateCostMapDTOs(int numberToGenerate) {
