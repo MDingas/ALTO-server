@@ -1,31 +1,30 @@
 package com.example.restservice.dto.costmap;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotBlank;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CostTypeDTO {
 
     @NotBlank
-    @JsonProperty("cost-mode")
     @Field("cost-mode")
     private String costMode;
 
     @NotBlank
-    @JsonProperty("cost-metric")
     @Field("cost-metric")
     private String costMetric;
 
-    @JsonProperty("description")
     @Field("description")
     private String description;
 
-    public CostTypeDTO() {
-
-    }
-
-    public CostTypeDTO(@NotBlank String costMode, @NotBlank String costMetric, String description) {
+    @JsonCreator
+    public CostTypeDTO(@JsonProperty(value = "cost-mode", required = true) String costMode,
+                       @JsonProperty(value = "cost-metric", required = true) String costMetric,
+                       @JsonProperty(value = "description", required = false) String description) {
         this.costMode = costMode;
         this.costMetric = costMetric;
         this.description = description;
