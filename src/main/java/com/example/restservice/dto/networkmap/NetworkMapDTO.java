@@ -1,5 +1,6 @@
 package com.example.restservice.dto.networkmap;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
@@ -19,20 +20,16 @@ public class NetworkMapDTO {
 
     @NotNull
     @Indexed(unique = true)
-    @JsonProperty("meta")
     @Field("meta")
     private MetaDataDTO metaDataDTO;
 
     @NotNull
-    @JsonProperty("network-map")
     @Field("network-map")
     private Map<String, IpAggregationsDTO> networkAggregations;
 
-    public NetworkMapDTO() {
-
-    }
-
-    public NetworkMapDTO(@NotNull MetaDataDTO metaDataDTO, @NotNull Map<String, IpAggregationsDTO> networkAggregations) {
+    @JsonCreator
+    public NetworkMapDTO(@JsonProperty(value = "meta", required = true) MetaDataDTO metaDataDTO,
+                         @JsonProperty(value = "network-map", required = true) Map<String, IpAggregationsDTO> networkAggregations) {
         this.metaDataDTO = metaDataDTO;
         this.networkAggregations = networkAggregations;
     }

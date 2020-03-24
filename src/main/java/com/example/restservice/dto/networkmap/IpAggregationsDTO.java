@@ -7,18 +7,14 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class IpAggregationsDTO {
 
-    @JsonProperty("ipv4")
     @Field("ipv4")
     private String[] ipv4Aggregations;
 
-    @JsonProperty("ipv6")
     @Field("ipv6")
     private String[] ipv6Aggregations;
 
-    public IpAggregationsDTO() {
-    }
-
-    public IpAggregationsDTO(String[] ipv4Aggregations, String[] ipv6Aggregations) {
+    public IpAggregationsDTO(@JsonProperty(value = "ipv4", required = false) String[] ipv4Aggregations,
+                             @JsonProperty(value = "ipv6", required = false) String[] ipv6Aggregations) {
         this.ipv4Aggregations = ipv4Aggregations;
         this.ipv6Aggregations = ipv6Aggregations;
     }
