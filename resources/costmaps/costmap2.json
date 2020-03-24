@@ -1,0 +1,22 @@
+{
+  "meta" : {
+    "vtag": {
+      "resource-id": "cost-map2",
+      "tag": "da65eca2eb7a10ce8b059740b0b2e3f8eb1d4667"
+    },
+    "dependent-vtags" : [
+      {
+        "resource-id": "network-map-2",
+        "tag": "da65eca2eb7a10ce8b059740b0b2e3f8eb1d4333",
+      }
+    ],
+    "cost-type" : {
+      "cost-mode"  : "numerical",
+      "cost-metric": "routingcost",
+      "description": "Cost of routing"
+    }
+  },
+  "cost-map" : {
+    "PID1": { "PID1": 6,  "PID2": 6,  "PID3": 6 }
+  }
+}

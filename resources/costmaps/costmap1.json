@@ -1,0 +1,23 @@
+{
+  "meta" : {
+    "vtag": {
+      "resource-id": "my-default-cost-map",
+      "tag": "da65eca2eb7a10ce8b059740b0b2e3f8eb1d4785"
+    },
+    "dependent-vtags" : [
+      {
+        "resource-id": "my-default-network-map",
+        "tag": "da65eca2eb7a10ce8b059740b0b2e3f8eb1d4785"
+      }
+    ],
+    "cost-type" : {
+      "cost-mode"  : "numerical",
+      "cost-metric": "routingcost"
+    }
+  },
+  "cost-map" : {
+    "PID1": { "PID1": 1,  "PID2": 5,  "PID3": 10 },
+    "PID2": { "PID1": 5,  "PID2": 1,  "PID3": 15 },
+    "PID3": { "PID1": 20, "PID2": 15  }
+  }
+}
