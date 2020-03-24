@@ -2,7 +2,7 @@ package com.example.restservice.controller;
 
 import com.example.restservice.dto.networkmap.NetworkMapDTO;
 import com.example.restservice.dto.networkmap.NetworkMapFilterDTO;
-import com.example.restservice.service.Service;
+import com.example.restservice.service.NetworkMapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +19,23 @@ public class NetworkMapController {
 
     private static final Logger logger = LoggerFactory.getLogger(NetworkMapController.class);
 
-    private Service service;
+    private NetworkMapService networkMapService;
 
     @Autowired
-    public NetworkMapController(Service service) {
-        this.service = service;
+    public NetworkMapController(NetworkMapService service) {
+        this.networkMapService = service;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "")
     public List<NetworkMapDTO> getNetworkMaps() {
         logger.info("Request for retrieval of all network maps");
-        return service.getAllNetworkMaps();
+        return networkMapService.getAllNetworkMaps();
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "")
     public void postNetworkMap(@Valid @RequestBody NetworkMapDTO networkMapDTO) {
         logger.info("Request for insertion of new network map");
-        service.putNetworkMapDTO(networkMapDTO);
+        networkMapService.putNetworkMapDTO(networkMapDTO);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "{resourceId}")
@@ -47,9 +47,9 @@ public class NetworkMapController {
 
         try {
             if (version != null) {
-                networkMapDTO = service.getNetworkMap(resourceId, version);
+                networkMapDTO = networkMapService.getNetworkMap(resourceId, version);
             } else {
-                networkMapDTO = service.getLatestNetworkMap(resourceId);
+                networkMapDTO = networkMapService.getLatestNetworkMap(resourceId);
             }
         } catch (NotFoundException e) {
             logger.warn(String.format("Could not find network map (resource_id=%s, version=%s)", resourceId, version));
@@ -67,11 +67,10 @@ public class NetworkMapController {
 
         try {
             if (version != null) {
-                networkMapDTO = service.getNetworkMap(resourceId, version, networkMapFilterDTO);
+                networkMapDTO = networkMapService.getNetworkMap(resourceId, version, networkMapFilterDTO);
             }
             else {
-                //networkMapDTO = service.getLatestFilteredNetworkMap(resourceId, networkMapFilterDTO);
-                networkMapDTO = null;
+                networkMapDTO = networkMapService.getLatestNetworkMap(resourceId, networkMapFilterDTO);
             }
         } catch (NotFoundException e) {
             logger.warn(String.format("Could not find network map (resource_id=%s, version=%s)", resourceId, version));

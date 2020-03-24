@@ -1,9 +1,6 @@
 package com.example.restservice.repository;
 
-import com.example.restservice.dto.networkmap.MetaDataDTO;
 import com.example.restservice.dto.networkmap.NetworkMapDTO;
-import com.example.restservice.dto.networkmap.VersionTagDTO;
-import com.example.restservice.entities.interfaces.NetworkMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -25,25 +22,10 @@ public class CustomNetworkMapRepositoryImpl implements CustomNetworkMapRepositor
     }
 
     @Override
-    public Optional<NetworkMapDTO> findByResourceIdAndTagProjectSrcPIDs(String resourceId, String version, List<String> srcPIDs) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("meta.vtag.resource-id").is(resourceId)
-                                  .and("meta.vtag.tag").is(version));
-
-        for (String srcPid : srcPIDs) {
-           query.fields().include("network-map." + srcPid);
-        }
-
-        NetworkMapDTO networkMapDTO = mongoTemplate.findOne(query, NetworkMapDTO.class);
-
-        return Optional.ofNullable(networkMapDTO);
-    }
-
-    @Override
     public Optional<NetworkMapDTO> findByResourceIdAndTag(String resourceId, String tag) {
         Query query = new Query();
         query.addCriteria(Criteria.where("meta.vtag.resource-id").is(resourceId)
-                                  .and("meta.vtag.tag").is(tag));
+                .and("meta.vtag.tag").is(tag));
 
         NetworkMapDTO networkMapDTO = mongoTemplate.findOne(query, NetworkMapDTO.class);
 
@@ -62,4 +44,37 @@ public class CustomNetworkMapRepositoryImpl implements CustomNetworkMapRepositor
         return Optional.ofNullable(networkMapDTO);
     }
 
+
+    @Override
+    public Optional<NetworkMapDTO> findByResourceIdAndTagProjectSrcPIDs(String resourceId, String version, List<String> srcPIDs) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("meta.vtag.resource-id").is(resourceId)
+                                  .and("meta.vtag.tag").is(version));
+
+        for (String srcPID : srcPIDs) {
+           query.fields().include("network-map." + srcPID);
+        }
+        query.fields().include("meta");
+
+        NetworkMapDTO networkMapDTO = mongoTemplate.findOne(query, NetworkMapDTO.class);
+
+        return Optional.ofNullable(networkMapDTO);
+    }
+
+    @Override
+    public Optional<NetworkMapDTO> findLatestVersionByResourceIdProjectSrcPIDs(String resourceId, List<String> srcPIDs) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("meta.vtag.resource-id").is(resourceId));
+        query.with(Sort.by(Sort.Direction.DESC, "meta.vtag.tag"));
+        query.limit(1);
+
+        for (String srcPID : srcPIDs) {
+            query.fields().include("network-map." + srcPID);
+        }
+        query.fields().include("meta");
+
+        NetworkMapDTO networkMapDTO = mongoTemplate.findOne(query, NetworkMapDTO.class);
+
+        return Optional.ofNullable(networkMapDTO);
+    }
 }

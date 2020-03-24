@@ -9,4 +9,5 @@ public interface CustomNetworkMapRepository {
     Optional<NetworkMapDTO> findByResourceIdAndTag(String resourceId, String tag);
     Optional<NetworkMapDTO> findLatestVersionByResourceId(String resourceId);
     Optional<NetworkMapDTO> findByResourceIdAndTagProjectSrcPIDs(String resourceId, String version, List<String> srcPIDs);
+    Optional<NetworkMapDTO> findLatestVersionByResourceIdProjectSrcPIDs(String resourceId, List<String> srcPIDs);
 }

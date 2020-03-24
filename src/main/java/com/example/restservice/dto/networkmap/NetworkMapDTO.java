@@ -15,7 +15,7 @@ public class NetworkMapDTO {
 
     @JsonIgnore
     @Id
-    String id;
+    private String id;
 
     @NotNull
     @Indexed(unique = true)
