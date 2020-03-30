@@ -12,37 +12,37 @@ public class CostTypeDTO {
 
     @NotBlank
     @Field("cost-mode")
-    private String costMode;
+    private CostModeDTO costMode;
 
     @NotBlank
     @Field("cost-metric")
-    private String costMetric;
+    private CostMetricDTO costMetric;
 
     @Field("description")
     private String description;
 
     @JsonCreator
-    public CostTypeDTO(@JsonProperty(value = "cost-mode", required = true) String costMode,
-                       @JsonProperty(value = "cost-metric", required = true) String costMetric,
+    public CostTypeDTO(@JsonProperty(value = "cost-mode", required = true) CostModeDTO costMode,
+                       @JsonProperty(value = "cost-metric", required = true) CostMetricDTO costMetric,
                        @JsonProperty(value = "description", required = false) String description) {
         this.costMode = costMode;
         this.costMetric = costMetric;
         this.description = description;
     }
 
-    public String getCostMode() {
+    public CostModeDTO getCostMode() {
         return costMode;
     }
 
-    public void setCostMode(String costMode) {
+    public void setCostMode(CostModeDTO costMode) {
         this.costMode = costMode;
     }
 
-    public String getCostMetric() {
+    public CostMetricDTO getCostMetric() {
         return costMetric;
     }
 
-    public void setCostMetric(String costMetric) {
+    public void setCostMetric(CostMetricDTO costMetric) {
         this.costMetric = costMetric;
     }
 
