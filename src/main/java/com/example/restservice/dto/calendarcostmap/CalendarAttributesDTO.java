@@ -9,7 +9,6 @@ import java.util.List;
 
 public class CalendarAttributesDTO {
 
-    @NotNull
     @Field("cost-type-names")
     private List<String> costTypeNames;
 
