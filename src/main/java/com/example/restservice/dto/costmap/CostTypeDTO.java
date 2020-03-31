@@ -5,16 +5,16 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CostTypeDTO {
 
-    @NotBlank
+    @NotNull
     @Field("cost-mode")
     private CostModeDTO costMode;
 
-    @NotBlank
+    @NotNull
     @Field("cost-metric")
     private CostMetricDTO costMetric;
 
