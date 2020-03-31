@@ -31,7 +31,7 @@ public enum CostMetricDTO {
     static {
         Map<String, CostMetricDTO> valueToEnumMap = new HashMap<>();
         for (CostMetricDTO costMetricDTO : CostMetricDTO.values()) {
-            valueToEnumMap.put(costMetricDTO.toString(), costMetricDTO);
+            valueToEnumMap.put(costMetricDTO.getValue(), costMetricDTO);
         }
         ENUM_MAP = Collections.unmodifiableMap(valueToEnumMap);
     }
@@ -42,7 +42,11 @@ public enum CostMetricDTO {
 
     @JsonCreator
     public static CostMetricDTO fromString(String value) {
-        return ENUM_MAP.get(value);
+        if (ENUM_MAP.containsKey(value)) {
+            return ENUM_MAP.get(value);
+        } else {
+            throw new IllegalArgumentException("Could not find CostMetricDTO instance with value " + value);
+        }
     }
 
     @JsonValue
