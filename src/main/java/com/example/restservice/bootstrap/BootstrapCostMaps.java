@@ -1,9 +1,6 @@
 package com.example.restservice.bootstrap;
 
-import com.example.restservice.dto.costmap.CostMapDTO;
-import com.example.restservice.dto.costmap.CostTypeDTO;
-import com.example.restservice.dto.costmap.MetaDataDTO;
-import com.example.restservice.dto.costmap.VersionTagDTO;
+import com.example.restservice.dto.costmap.*;
 import com.example.restservice.repository.CostMapRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,16 +21,13 @@ public class BootstrapCostMaps implements CommandLineRunner {
     }
 
     private static CostTypeDTO generateCostTypeDTO(int seed) {
-        String costMode = "costmode" + seed;
-        String costMetric = "costmetric" + seed;
-
         CostTypeDTO costTypeDTO;
 
         if (seed % 2 == 0) {
             String description = "description" + seed;
-            costTypeDTO = new CostTypeDTO(costMode, costMetric, description);
+            costTypeDTO = new CostTypeDTO(CostModeDTO.NUMERICAL, CostMetricDTO.HOP_COUNT, description);
         } else {
-            costTypeDTO = new CostTypeDTO(costMode, costMetric, null);
+            costTypeDTO = new CostTypeDTO(CostModeDTO.NUMERICAL, CostMetricDTO.HOP_COUNT, null);
         }
 
         return costTypeDTO;
