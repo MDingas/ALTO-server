@@ -30,12 +30,12 @@ public class IRDResourceEntryDTO {
 
     @JsonCreator
     public IRDResourceEntryDTO(@JsonProperty(value = "uri", required = true) String uri,
-                               @JsonProperty(value = "media-type", required = true) ResourceMediaTypeDTO mediaType,
+                               @JsonProperty(value = "media-type", required = true) ResourceMediaTypeDTO resourceMediaTypeDTO,
                                @JsonProperty(value = "accepts", required = false) ParameterMediaTypeDTO parameterMediaTypeDTO,
                                @JsonProperty(value = "capabilities", required = false) CapabilitiesDTO capabilitiesDTO,
                                @JsonProperty(value = "uses", required = false) List<String> usedResources) {
         this.uri = uri;
-        this.resourceMediaTypeDTO = mediaType;
+        this.resourceMediaTypeDTO = resourceMediaTypeDTO;
         this.parameterMediaTypeDTO = parameterMediaTypeDTO;
         this.capabilitiesDTO = capabilitiesDTO;
         this.usedResources = usedResources;
