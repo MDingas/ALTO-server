@@ -1,0 +1,37 @@
+{
+  "resourceId": "my-default-network-map",
+  "uri" : "http://alto.example.com/networkmap",
+  "networkMappingsEntities": [
+    {
+      "versionTag": "da65eca2eb7a10ce8b059740b0b2e3f8eb1d4785",
+      "addressAggregations" : [
+        {
+          "pid" : "PID1",
+          "ipv4AddressList": [ "192.0.2.0/24", "198.51.100.0/25" ]
+        },
+        {
+          "pid" : "PID2",
+          "ipv4AddressList": [ "198.51.100.128/25" ]
+        },
+        {
+          "pid" : "PID3",
+          "ipv4AddressList": [ "0.0.0.0/0" ],
+          "ipv6AddressList": [ "::/0" ]
+        }
+      ]
+    },
+    {
+      "versionTag": "da65eca2eb7a10ce8b059740b0b2e3f8eb1d4786",
+      "addressAggregations" : [
+        {
+          "pid" : "PID1",
+          "ipv4AddressList": [ "192.0.2.0/24", "198.51.100.0/25" ]
+        },
+        {
+          "pid" : "PID2",
+          "ipv4AddressList": [ "198.51.100.128/25" ]
+        }
+      ]
+    }
+  ]
+}
