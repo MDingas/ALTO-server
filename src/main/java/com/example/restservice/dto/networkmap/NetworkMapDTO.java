@@ -29,9 +29,9 @@ public class NetworkMapDTO {
 
     @JsonCreator
     public NetworkMapDTO(@JsonProperty(value = "meta", required = true) MetaDataDTO metaDataDTO,
-                         @JsonProperty(value = "network-map", required = true) Map<String, IpAggregationsDTO> networkAggregations) {
+                         @JsonProperty(value = "network-map", required = true) Map<String, IpAggregationsDTO> ipAggregationsDTOMap) {
         this.metaDataDTO = metaDataDTO;
-        this.ipAggregationsDTOMap = networkAggregations;
+        this.ipAggregationsDTOMap = ipAggregationsDTOMap;
     }
 
     public String getId() {
@@ -50,11 +50,11 @@ public class NetworkMapDTO {
         this.metaDataDTO = metaDataDTO;
     }
 
-    public Map<String, IpAggregationsDTO> getNetworkAggregations() {
+    public Map<String, IpAggregationsDTO> getIpAggregationsDTOMap() {
         return ipAggregationsDTOMap;
     }
 
-    public void setNetworkAggregations(Map<String, IpAggregationsDTO> networkAggregations) {
-        this.ipAggregationsDTOMap = networkAggregations;
+    public void setIpAggregationsDTOMap(Map<String, IpAggregationsDTO> ipAggregationsDTOMap) {
+        this.ipAggregationsDTOMap = ipAggregationsDTOMap;
     }
 }
