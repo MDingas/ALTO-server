@@ -4,7 +4,7 @@
   "networkMappingsEntities": [
     {
       "versionTag": "da65eca2eb7a10ce8b059740b0b2e3f8eb1d4785",
-      "addressAggregations" : [
+      "addressAggregationEntities" : [
         {
           "pid" : "PID1",
           "ipv4AddressList": [ "192.0.2.0/24", "198.51.100.0/25" ]
@@ -22,7 +22,7 @@
     },
     {
       "versionTag": "da65eca2eb7a10ce8b059740b0b2e3f8eb1d4786",
-      "addressAggregations" : [
+      "addressAggregationEntities" : [
         {
           "pid" : "PID1",
           "ipv4AddressList": [ "192.0.2.0/24", "198.51.100.0/25" ]
