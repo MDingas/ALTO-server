@@ -1,0 +1,38 @@
+{
+  "resourceId": "my-default-cost-map",
+  "uri" : "http://alto.example.com/costmap",
+  "costMappingsEntities": [
+    {
+      "versionTag": "da65eca2eb7a10ce8b059740b0b2e3f8eb1d4785",
+      "costMode": "numerical",
+      "costMetric": "routingcost",
+      "fromSrcCostsEntities" : [
+        {
+          "srcNode" : "PID1",
+          "dstCostsEntities" : [
+            {
+              "dstNode": "PID1",
+              "value" : "1"
+            },
+            {
+              "dstNode": "PID2",
+              "value" : "2"
+            },
+            {
+              "dstNode": "PID3",
+              "value" : "3"
+            }
+          ]
+        }, {
+          "srcNode" : "PID10",
+          "dstCostsEntities" : [
+            {
+              "dstNode" : "PID20",
+              "value" : 10
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
