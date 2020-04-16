@@ -1,9 +1,11 @@
 package com.example.restservice.repository;
 
-import com.example.restservice.dto.costmap.CostMapDTO;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
+import com.example.restservice.entity.CostMapEntity;
 
-@Repository
-public interface CostMapRepository extends MongoRepository<CostMapDTO, String> {
+import java.util.List;
+import java.util.Optional;
+
+public interface CostMapRepository extends ALTORepository<CostMapEntity> {
+    Optional<CostMapEntity> findVersionOfResource(String resourceId, String versionTag, List<String> srcPIDs, List<String> dstPIDs, String costMode, String costMetric);
+    Optional<CostMapEntity> findLatestVersionOfResource(String resourceId, List<String> srcPIDs, List<String> dstPIDs, String costMode, String costMetric);
 }
