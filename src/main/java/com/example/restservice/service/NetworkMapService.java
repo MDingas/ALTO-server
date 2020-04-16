@@ -12,5 +12,5 @@ public interface NetworkMapService {
     NetworkMapDTO getLatestNetworkMap(String resourceId) throws NotFoundException;
     NetworkMapDTO getNetworkMap(String resourceId, String version, NetworkMapFilterDTO networkMapFilterDTO) throws NotFoundException;
     NetworkMapDTO getLatestNetworkMap(String resourceId, NetworkMapFilterDTO networkMapFilterDTO) throws NotFoundException;
-    void putNetworkMapDTO(NetworkMapDTO networkMapDTO);
+    //void putNetworkMapDTO(NetworkMapDTO networkMapDTO);
 }
