@@ -32,49 +32,57 @@ public class NetworkMapController {
         return networkMapService.getAllNetworkMaps();
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "")
-    public void postNetworkMap(@Valid @RequestBody NetworkMapDTO networkMapDTO) {
-        logger.info("Request for insertion of new network map");
-        networkMapService.putNetworkMapDTO(networkMapDTO);
-    }
+    //@RequestMapping(method = RequestMethod.POST, value = "")
+    //public void postNetworkMap(@Valid @RequestBody NetworkMapDTO networkMapDTO) {
+    //    logger.info("Request for insertion of new network map");
+    //    networkMapService.putNetworkMapDTO(networkMapDTO);
+    //}
 
     @RequestMapping(method = RequestMethod.GET, value = "{resourceId}")
     public NetworkMapDTO getNetworkMap(@PathVariable(value = "resourceId") String resourceId,
                                        @QueryParam(value = "version") String version) {
         logger.info(String.format("Request for retrieval a single network map (resource_id=%s, version=%s)", resourceId, version));
 
-        NetworkMapDTO networkMapDTO;
-
-        try {
-            if (version != null) {
-                networkMapDTO = networkMapService.getNetworkMap(resourceId, version);
-            } else {
-                networkMapDTO = networkMapService.getLatestNetworkMap(resourceId);
+        if (version != null) {
+            try {
+                return networkMapService.getNetworkMap(resourceId, version);
+            } catch (NotFoundException e) {
+                logger.warn(String.format("Could not find network map (resource_id=%s, version=%s)", resourceId, version));
+                throw new NotFoundException("Could not find network map with this version");
             }
-        } catch (NotFoundException e) {
-            logger.warn(String.format("Could not find network map (resource_id=%s, version=%s)", resourceId, version));
-            throw new NotFoundException("Could not find network map");
+        } else {
+            try {
+                return networkMapService.getLatestNetworkMap(resourceId);
+            } catch (NotFoundException e) {
+                logger.warn(String.format("Could not find any version of %s", resourceId));
+                throw new NotFoundException("Network map does not have any versions");
+            }
         }
-        return networkMapDTO;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "{resourceId}")
     public NetworkMapDTO getNetworkMapWithFilter(@PathVariable(value = "resourceId") String resourceId,
                                                  @QueryParam(value = "version") String version,
                                                  @Valid @RequestBody NetworkMapFilterDTO networkMapFilterDTO) {
-        logger.info(String.format("Request for retrieval of a single network map (resource_id=%s, version=%s, pids=%s", resourceId, version, networkMapFilterDTO.getsrcPIDs().toString()));
+        logger.info(String.format("Request for retrieval of a single network map (resource_id=%s, version=%s, pids=%s", resourceId, version, networkMapFilterDTO.getPidsToFilterBy().toString()));
+
         NetworkMapDTO networkMapDTO;
 
-        try {
-            if (version != null) {
+        if (version != null) {
+            try {
                 networkMapDTO = networkMapService.getNetworkMap(resourceId, version, networkMapFilterDTO);
+            } catch (NotFoundException e) {
+                logger.warn(String.format("Could not find network map (resource_id=%s, version=%s)", resourceId, version));
+                throw new NotFoundException("Could not find network map with given filter");
             }
-            else {
+        }
+        else {
+            try {
                 networkMapDTO = networkMapService.getLatestNetworkMap(resourceId, networkMapFilterDTO);
+            } catch (NotFoundException e) {
+                logger.warn(String.format("Could not find network map (resource_id=%s)", resourceId));
+                throw new NotFoundException("Could not find latest version of network map with given filter");
             }
-        } catch (NotFoundException e) {
-            logger.warn(String.format("Could not find network map (resource_id=%s, version=%s)", resourceId, version));
-            throw new NotFoundException("Could not find network map");
         }
         return networkMapDTO;
     }
