@@ -3,24 +3,21 @@ package com.example.restservice.repository;
 import com.example.restservice.entity.ALTOResourceEntity;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
-import org.springframework.data.mongodb.core.aggregation.Fields;
-import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
-public class ALTOMongoRepository<T extends ALTOResourceEntity> implements ALTORepository<T> {
+public class ALTOBaseMongoRepository<T extends ALTOResourceEntity> implements ALTOBaseRepository<T> {
     private final Class<T> entityClass;
     private static final String[] resourceProjectionFields = {"_id", "resource-id", "uri"};
     protected MongoTemplate mongoTemplate;
 
-    public ALTOMongoRepository(Class<T> entityClass, MongoTemplate mongoTemplate) {
+    public ALTOBaseMongoRepository(Class<T> entityClass, MongoTemplate mongoTemplate) {
         this.entityClass = entityClass;
         this.mongoTemplate = mongoTemplate;
     }

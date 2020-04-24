@@ -1,4 +1,4 @@
-package com.example.restservice.repository;
+package com.example.restservice.repository.informationresourcedirectory;
 
 import com.example.restservice.dto.informationresourcedirectory.InformationResourceDirectoryDTO;
 import org.springframework.data.mongodb.repository.MongoRepository;

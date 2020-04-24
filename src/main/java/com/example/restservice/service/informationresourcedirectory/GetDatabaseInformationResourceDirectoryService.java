@@ -1,8 +1,8 @@
-package com.example.restservice.service;
+package com.example.restservice.service.informationresourcedirectory;
 
 import com.example.restservice.dto.informationresourcedirectory.InformationResourceDirectoryDTO;
 import com.example.restservice.exception.MultipleInformationResourceDirectoriesException;
-import com.example.restservice.repository.InformationResourceDirectoryRepository;
+import com.example.restservice.repository.informationresourcedirectory.InformationResourceDirectoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

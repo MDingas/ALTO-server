@@ -1,10 +1,10 @@
-package com.example.restservice.service;
+package com.example.restservice.service.networkmap;
 
 import com.example.restservice.dto.networkmap.NetworkMapDTO;
 import com.example.restservice.dto.networkmap.NetworkMapFilterDTO;
 import com.example.restservice.entity.NetworkMapEntity;
 import com.example.restservice.mapper.NetworkMapMapper;
-import com.example.restservice.repository.NetworkMapRepository;
+import com.example.restservice.repository.networkmap.NetworkMapRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.example.restservice.service;
+package com.example.restservice.service.costmap;
 
 import com.example.restservice.dto.costmap.CostMapDTO;
 import com.example.restservice.dto.costmap.CostMapFilterDTO;
@@ -6,7 +6,7 @@ import com.example.restservice.dto.costmap.CostTypeDTO;
 import com.example.restservice.dto.costmap.SrcDstMappingsDTO;
 import com.example.restservice.entity.CostMapEntity;
 import com.example.restservice.mapper.CostMapMapper;
-import com.example.restservice.repository.CostMapRepository;
+import com.example.restservice.repository.costmap.CostMapRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

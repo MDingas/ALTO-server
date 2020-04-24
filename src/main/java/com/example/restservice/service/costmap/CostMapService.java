@@ -1,4 +1,4 @@
-package com.example.restservice.service;
+package com.example.restservice.service.costmap;
 
 import com.example.restservice.dto.costmap.CostMapDTO;
 import com.example.restservice.dto.costmap.CostMapFilterDTO;

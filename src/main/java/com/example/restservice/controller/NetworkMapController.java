@@ -2,7 +2,7 @@ package com.example.restservice.controller;
 
 import com.example.restservice.dto.networkmap.NetworkMapDTO;
 import com.example.restservice.dto.networkmap.NetworkMapFilterDTO;
-import com.example.restservice.service.NetworkMapService;
+import com.example.restservice.service.networkmap.NetworkMapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,6 @@ import java.util.List;
 @RequestMapping("networkmaps")
 public class NetworkMapController {
 
-    private static final Logger logger = LoggerFactory.getLogger(NetworkMapController.class);
-
     private NetworkMapService networkMapService;
 
     @Autowired
@@ -28,7 +26,6 @@ public class NetworkMapController {
 
     @RequestMapping(method = RequestMethod.GET, value = "")
     public List<NetworkMapDTO> getNetworkMaps() {
-        logger.info("Request for retrieval of all network maps");
         return networkMapService.getAllNetworkMaps();
     }
 
@@ -41,20 +38,16 @@ public class NetworkMapController {
     @RequestMapping(method = RequestMethod.GET, value = "{resourceId}")
     public NetworkMapDTO getNetworkMap(@PathVariable(value = "resourceId") String resourceId,
                                        @QueryParam(value = "version") String version) {
-        logger.info(String.format("Request for retrieval a single network map (resource_id=%s, version=%s)", resourceId, version));
-
         if (version != null) {
             try {
                 return networkMapService.getNetworkMap(resourceId, version);
             } catch (NotFoundException e) {
-                logger.warn(String.format("Could not find network map (resource_id=%s, version=%s)", resourceId, version));
                 throw new NotFoundException("Could not find network map with this version");
             }
         } else {
             try {
                 return networkMapService.getLatestNetworkMap(resourceId);
             } catch (NotFoundException e) {
-                logger.warn(String.format("Could not find any version of %s", resourceId));
                 throw new NotFoundException("Network map does not have any versions");
             }
         }
@@ -64,15 +57,12 @@ public class NetworkMapController {
     public NetworkMapDTO getNetworkMapWithFilter(@PathVariable(value = "resourceId") String resourceId,
                                                  @QueryParam(value = "version") String version,
                                                  @Valid @RequestBody NetworkMapFilterDTO networkMapFilterDTO) {
-        logger.info(String.format("Request for retrieval of a single network map (resource_id=%s, version=%s, pids=%s", resourceId, version, networkMapFilterDTO.getPidsToFilterBy().toString()));
-
         NetworkMapDTO networkMapDTO;
 
         if (version != null) {
             try {
                 networkMapDTO = networkMapService.getNetworkMap(resourceId, version, networkMapFilterDTO);
             } catch (NotFoundException e) {
-                logger.warn(String.format("Could not find network map (resource_id=%s, version=%s)", resourceId, version));
                 throw new NotFoundException("Could not find network map with given filter");
             }
         }
@@ -80,7 +70,6 @@ public class NetworkMapController {
             try {
                 networkMapDTO = networkMapService.getLatestNetworkMap(resourceId, networkMapFilterDTO);
             } catch (NotFoundException e) {
-                logger.warn(String.format("Could not find network map (resource_id=%s)", resourceId));
                 throw new NotFoundException("Could not find latest version of network map with given filter");
             }
         }

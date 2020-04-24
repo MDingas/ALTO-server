@@ -1,4 +1,4 @@
-package com.example.restservice.service;
+package com.example.restservice.service.networkmap;
 
 import com.example.restservice.dto.networkmap.NetworkMapDTO;
 import com.example.restservice.dto.networkmap.NetworkMapFilterDTO;

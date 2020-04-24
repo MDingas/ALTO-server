@@ -1,4 +1,4 @@
-package com.example.restservice.repository;
+package com.example.restservice.repository.calendarcostmap;
 
 import com.example.restservice.dto.calendarcostmap.CalendarCostMapDTO;
 import org.springframework.data.mongodb.repository.MongoRepository;
