@@ -1,4 +1,4 @@
-package com.example.restservice.dto.costmap;
+package com.example.restservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
