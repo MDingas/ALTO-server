@@ -2,10 +2,10 @@ package com.example.restservice.bootstrap;
 
 import com.example.restservice.entity.CostMapEntity;
 import com.example.restservice.entity.NetworkMapEntity;
-import com.example.restservice.repository.CalendarCostMapRepository;
-import com.example.restservice.repository.CostMapRepository;
-import com.example.restservice.repository.InformationResourceDirectoryRepository;
-import com.example.restservice.repository.NetworkMapRepository;
+import com.example.restservice.repository.calendarcostmap.CalendarCostMapRepository;
+import com.example.restservice.repository.costmap.CostMapRepository;
+import com.example.restservice.repository.informationresourcedirectory.InformationResourceDirectoryRepository;
+import com.example.restservice.repository.networkmap.NetworkMapRepository;
 import com.example.restservice.validation.BeanValidationDeserializer;
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;

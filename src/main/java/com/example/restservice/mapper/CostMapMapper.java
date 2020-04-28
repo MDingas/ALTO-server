@@ -1,7 +1,9 @@
 package com.example.restservice.mapper;
 
+import com.example.restservice.dto.VersionTagDTO;
 import com.example.restservice.dto.costmap.*;
 import com.example.restservice.entity.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
