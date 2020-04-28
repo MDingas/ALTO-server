@@ -1,9 +1,9 @@
 package com.example.restservice.mapper;
 
+import com.example.restservice.dto.VersionTagDTO;
 import com.example.restservice.dto.networkmap.IpAggregationsDTO;
 import com.example.restservice.dto.networkmap.MetaDataDTO;
 import com.example.restservice.dto.networkmap.NetworkMapDTO;
-import com.example.restservice.dto.networkmap.VersionTagDTO;
 import com.example.restservice.entity.AddressAggregationEntity;
 import com.example.restservice.entity.NetworkMapEntity;
 import com.example.restservice.entity.NetworkMappingsEntity;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class NetworkMapMapper implements ALTOMapper<NetworkMapEntity, NetworkMapDTO> {
+public class NetworkMapMapperImpl implements NetworkMapMapper {
 
     private NetworkMapDTO buildNetworkMapDTO(String resourceId, NetworkMappingsEntity networkMappingsEntity) {
         String versionTag = networkMappingsEntity.getVersionTag();
@@ -54,19 +54,11 @@ public class NetworkMapMapper implements ALTOMapper<NetworkMapEntity, NetworkMap
         return ipAggregationsDTOMap;
     }
 
-    private Optional<NetworkMappingsEntity> findNetworkMappingsEntityVersion(List<NetworkMappingsEntity> networkMappingsEntities, String versionTag) {
-        return networkMappingsEntities
-                .stream()
-                .filter(resource -> resource.getVersionTag().equals(versionTag))
-                .findFirst();
-    }
-
     @Override
     public List<NetworkMapDTO> mapAllVersionsFrom(NetworkMapEntity networkMapEntity) {
         List<NetworkMappingsEntity> networkMappingsEntities = networkMapEntity.getNetworkMappingsEntities();
 
         String resourceId = networkMapEntity.getResourceId();
-        String uri = networkMapEntity.getUri();
 
         return buildNetworkMapDTOs(resourceId, networkMappingsEntities);
     }
@@ -74,7 +66,6 @@ public class NetworkMapMapper implements ALTOMapper<NetworkMapEntity, NetworkMap
     @Override
     public Optional<NetworkMapDTO> mapFirstVersion(NetworkMapEntity networkMapEntity) {
         String resourceId = networkMapEntity.getResourceId();
-        String uri = networkMapEntity.getUri();
 
         List<NetworkMappingsEntity> networkMappingsEntities = networkMapEntity.getNetworkMappingsEntities();
 
@@ -86,21 +77,4 @@ public class NetworkMapMapper implements ALTOMapper<NetworkMapEntity, NetworkMap
             return Optional.of(networkMapDTO);
         }
     }
-
-    //public Optional<NetworkMapDTO> mapFromVersion(NetworkMapEntity networkMapEntity, String version) {
-    //    String resourceId = networkMapEntity.getResourceId();
-    //    String uri = networkMapEntity.getUri();
-
-    //    List<NetworkMappingsEntity> networkMappingsEntities = networkMapEntity.getNetworkMappingsEntities();
-
-    //    Optional<NetworkMappingsEntity> optionalNetworkMappingsEntity = findNetworkMappingsEntityVersion(networkMappingsEntities, version);
-
-    //    if (!optionalNetworkMappingsEntity.isPresent()) {
-    //        return Optional.empty();
-    //    } else {
-    //        NetworkMappingsEntity networkMappingsEntity = optionalNetworkMappingsEntity.get();
-    //        NetworkMapDTO networkMapDTO = buildNetworkMapDTO(resourceId, networkMappingsEntity);
-    //        return Optional.of(networkMapDTO);
-    //    }
-    //}
 }

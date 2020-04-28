@@ -12,12 +12,12 @@ import java.util.Optional;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
-public class ALTOBaseMongoRepository<T extends ALTOResourceEntity> implements ALTOBaseRepository<T> {
+public class ALTOResourceBaseMongoRepository<T extends ALTOResourceEntity> implements ALTOResourceBaseRepository<T> {
     private final Class<T> entityClass;
     private static final String[] resourceProjectionFields = {"_id", "resource-id", "uri"};
     protected MongoTemplate mongoTemplate;
 
-    public ALTOBaseMongoRepository(Class<T> entityClass, MongoTemplate mongoTemplate) {
+    public ALTOResourceBaseMongoRepository(Class<T> entityClass, MongoTemplate mongoTemplate) {
         this.entityClass = entityClass;
         this.mongoTemplate = mongoTemplate;
     }
