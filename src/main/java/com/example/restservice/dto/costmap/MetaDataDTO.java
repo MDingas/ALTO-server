@@ -1,5 +1,6 @@
 package com.example.restservice.dto.costmap;
 
+import com.example.restservice.dto.VersionTagDTO;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

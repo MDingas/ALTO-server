@@ -3,23 +3,22 @@ package com.example.restservice.service.networkmap;
 import com.example.restservice.dto.networkmap.NetworkMapDTO;
 import com.example.restservice.dto.networkmap.NetworkMapFilterDTO;
 import com.example.restservice.entity.NetworkMapEntity;
-import com.example.restservice.mapper.NetworkMapMapper;
+import com.example.restservice.mapper.NetworkMapMapperImpl;
 import com.example.restservice.repository.networkmap.NetworkMapRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+//@Component
 public class NetworkMapServiceImpl implements NetworkMapService {
 
     private NetworkMapRepository networkMapRepository;
-    private NetworkMapMapper networkMapMapper;
+    private NetworkMapMapperImpl networkMapMapper;
 
     @Autowired
-    public NetworkMapServiceImpl(NetworkMapRepository networkMapRepository, NetworkMapMapper networkMapMapper) {
+    public NetworkMapServiceImpl(NetworkMapRepository networkMapRepository, NetworkMapMapperImpl networkMapMapper) {
         this.networkMapRepository = networkMapRepository;
         this.networkMapMapper = networkMapMapper;
     }
