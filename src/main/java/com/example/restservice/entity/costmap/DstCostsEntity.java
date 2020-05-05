@@ -1,4 +1,4 @@
-package com.example.restservice.entity;
+package com.example.restservice.entity.costmap;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 

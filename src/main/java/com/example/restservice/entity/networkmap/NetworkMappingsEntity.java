@@ -1,4 +1,4 @@
-package com.example.restservice.entity;
+package com.example.restservice.entity.networkmap;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;

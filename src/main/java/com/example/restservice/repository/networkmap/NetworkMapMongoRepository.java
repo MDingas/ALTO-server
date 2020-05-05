@@ -2,8 +2,8 @@ package com.example.restservice.repository.networkmap;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
-import com.example.restservice.entity.NetworkMapEntity;
-import com.example.restservice.repository.ALTOResourceBaseMongoRepository;
+import com.example.restservice.entity.networkmap.NetworkMapEntity;
+import com.example.restservice.repository.ALTOResourceMongoRepository;
 import com.mongodb.BasicDBObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class NetworkMapMongoRepository extends ALTOResourceBaseMongoRepository<NetworkMapEntity> implements NetworkMapRepository {
+public class NetworkMapMongoRepository extends ALTOResourceMongoRepository<NetworkMapEntity> implements NetworkMapRepository {
 
     @Autowired
     public NetworkMapMongoRepository(MongoTemplate mongoTemplate) {

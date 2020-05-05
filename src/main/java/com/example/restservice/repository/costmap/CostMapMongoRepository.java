@@ -1,7 +1,7 @@
 package com.example.restservice.repository.costmap;
 
-import com.example.restservice.entity.CostMapEntity;
-import com.example.restservice.repository.ALTOResourceBaseMongoRepository;
+import com.example.restservice.entity.costmap.CostMapEntity;
+import com.example.restservice.repository.ALTOResourceMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -16,7 +16,7 @@ import java.util.*;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Repository
-public class CostMapMongoRepository extends ALTOResourceBaseMongoRepository<CostMapEntity> implements CostMapRepository {
+public class CostMapMongoRepository extends ALTOResourceMongoRepository<CostMapEntity> implements CostMapRepository {
 
     @Autowired
     public CostMapMongoRepository(MongoTemplate mongoTemplate) {

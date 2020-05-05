@@ -1,0 +1,50 @@
+{
+  "id": "my-default-calendar-cost-map",
+  "costMode": "numerical",
+  "costMetric": "throughput",
+  "calendarStartTime": "Tue, 1 Jul 2019 13:00:00 GMT",
+  "calendarIntervalSize":  7200,
+  "calendarIntervalNumber":  12,
+  "calendarIterations": 1,
+  "calendarCostMappingsEntities": [
+    {
+      "versionTag": "da65eca2eb7a10ce8b059740b0b2e3faaaad4785",
+      "fromSrcCostsEntities": [
+        {
+          "srcNode": "PID1" ,
+          "dstListCostEntities" : [
+            {
+              "dstNode": "PID1",
+              "values": [ 1, 12, 14, 18, 14, 14, 14, 18, 19, 20, 11, 12]
+            },
+            {
+              "dstNode": "PID2",
+              "values": [13,  4, 15, 16, 17, 18, 19, 20, 11, 12, 13, 14]
+            },
+            {
+              "dstNode": "PID3",
+              "values": [20, 20, 18, 14, 12, 12, 14, 14, 12, 12, 14, 16]
+            }
+          ]
+        },
+        {
+          "srcNode": "PID2" ,
+          "dstListCostEntities" : [
+            {
+              "dstNode": "PID1",
+              "values": [17, 18, 19, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+            },
+            {
+              "dstNode": "PID2",
+              "values": [20, 20, 18, 16, 14, 14, 14, 16, 16, 16, 14, 16]
+            },
+            {
+              "dstNode": "PID3",
+              "values": [20, 20, 18, 14, 12, 12, 14, 14, 12, 12, 14, 16]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

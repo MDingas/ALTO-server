@@ -1,9 +1,14 @@
 package com.example.restservice.mapper;
 
+import com.example.restservice.dto.CostMetricDTO;
+import com.example.restservice.dto.CostModeDTO;
+import com.example.restservice.dto.CostTypeDTO;
 import com.example.restservice.dto.VersionTagDTO;
 import com.example.restservice.dto.costmap.*;
-import com.example.restservice.entity.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.restservice.entity.costmap.CostMapEntity;
+import com.example.restservice.entity.costmap.CostMappingsEntity;
+import com.example.restservice.entity.costmap.DstCostsEntity;
+import com.example.restservice.entity.costmap.FromSrcCostsEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -34,10 +39,11 @@ public class CostMapMapper implements ALTOMapper<CostMapEntity, CostMapDTO> {
         return srcToDstCostMap;
     }
 
-    private CostMapDTO buildCostMapDTO(String resourceId, CostMappingsEntity costMappingsEntity) {
+    private CostMapDTO buildCostMapDTO(String resourceId,
+                                       String costMode,
+                                       String costMetric,
+                                       CostMappingsEntity costMappingsEntity) {
         String versionTag = costMappingsEntity.getVersionTag();
-        String costMode = costMappingsEntity.getCostMode();
-        String costMetric = costMappingsEntity.getCostMetric();
 
         CostTypeDTO costTypeDTO = new CostTypeDTO(CostModeDTO.fromString(costMode), CostMetricDTO.fromString(costMetric), null);
         VersionTagDTO versionTagDTO = new VersionTagDTO(resourceId, versionTag);
@@ -47,72 +53,42 @@ public class CostMapMapper implements ALTOMapper<CostMapEntity, CostMapDTO> {
         return new CostMapDTO(metaDataDTO, costMappings);
     }
 
-    private List<CostMapDTO> buildCostMapDTOs(String resourceId, List<CostMappingsEntity> costMappingsEntities) {
+    private List<CostMapDTO> buildCostMapDTOs(String resourceId,
+                                              String costMode,
+                                              String costMetric,
+                                              List<CostMappingsEntity> costMappingsEntities) {
         List<CostMapDTO> costMapDTOList = new ArrayList<>();
 
         for (CostMappingsEntity costMappingsEntity : costMappingsEntities) {
-            costMapDTOList.add(buildCostMapDTO(resourceId, costMappingsEntity));
+            costMapDTOList.add(buildCostMapDTO(resourceId, costMode, costMetric, costMappingsEntity));
         }
 
         return costMapDTOList;
     }
 
-
-    private Optional<CostMappingsEntity> findCostMappingsEntityVersion(List<CostMappingsEntity> costMappingsEntities, String versionTag) {
-        return costMappingsEntities
-                .stream()
-                .filter(resource -> resource.getVersionTag().equals(versionTag))
-                .findFirst();
-    }
-
-    public List<CostMapDTO> mapFromAllVersions(CostMapEntity costMapEntity) {
-        List<CostMappingsEntity> costMappingsEntities = costMapEntity.getCostMappingsEntities();
-
-        String resourceId = costMapEntity.getResourceId();
-        String uri = costMapEntity.getUri();
-
-        return buildCostMapDTOs(resourceId, costMappingsEntities);
-    }
-
-    //public Optional<CostMapDTO> mapFromVersion(CostMapEntity costMapEntity, String version) {
-    //    String resourceId = costMapEntity.getResourceId();
-    //    String uri = costMapEntity.getUri();
-
-    //    List<CostMappingsEntity> costMappingsEntities = costMapEntity.getCostMappingsEntities();
-    //    Optional<CostMappingsEntity> optionalCostMappingsEntity = findCostMappingsEntityVersion(costMappingsEntities, version);
-
-    //    if (!optionalCostMappingsEntity.isPresent()) {
-    //        return Optional.empty();
-    //    } else {
-    //        CostMappingsEntity costMappingsEntity = optionalCostMappingsEntity.get();
-    //        CostMapDTO costMapDTO = buildCostMapDTO(resourceId, costMappingsEntity);
-    //        return Optional.of(costMapDTO);
-    //    }
-    //}
-
     @Override
-    public List<CostMapDTO> mapAllVersionsFrom(CostMapEntity costMapEntity) {
-        String resourceId = costMapEntity.getResourceId();
-        String uri = costMapEntity.getUri();
+    public List<CostMapDTO> mapAllVersions(CostMapEntity costMapEntity) {
+        String resourceId = costMapEntity.getId();
+        String costMode = costMapEntity.getCostMode();
+        String costMetric = costMapEntity.getCostMetric();
 
         List<CostMappingsEntity> costMappingsEntities = costMapEntity.getCostMappingsEntities();
-
-        return buildCostMapDTOs(resourceId, costMappingsEntities);
+        return buildCostMapDTOs(resourceId, costMode, costMetric, costMappingsEntities);
     }
 
     @Override
-    public Optional<CostMapDTO> mapFirstVersion(CostMapEntity costMapEntity) {
-        String resourceId = costMapEntity.getResourceId();
-        String uri = costMapEntity.getUri();
+    public CostMapDTO mapVersionAtPosition(CostMapEntity costMapEntity, int index) {
+        String resourceId = costMapEntity.getId();
+        String costMode = costMapEntity.getCostMode();
+        String costMetric = costMapEntity.getCostMetric();
+
+        System.out.println(resourceId);
+        System.out.println(costMode);
+        System.out.println(costMetric);
+        System.out.println(costMapEntity.getCostMappingsEntities());
 
         List<CostMappingsEntity> costMappingsEntities = costMapEntity.getCostMappingsEntities();
-
-        if (costMappingsEntities.isEmpty()) {
-            return Optional.empty();
-        } else {
-            CostMappingsEntity firstCostMappingsEntity = costMappingsEntities.get(0);
-            CostMapDTO costMapDTO = buildCostMapDTO(resourceId, firstCostMappingsEntity);
-            return Optional.of(costMapDTO);
-        }
+        CostMappingsEntity firstCostMappingsEntity = costMappingsEntities.get(0);
+        return buildCostMapDTO(resourceId, costMode, costMetric, firstCostMappingsEntity);
     }
 }

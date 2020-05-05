@@ -1,7 +1,8 @@
 package com.example.restservice.bootstrap;
 
-import com.example.restservice.entity.CostMapEntity;
-import com.example.restservice.entity.NetworkMapEntity;
+import com.example.restservice.entity.calendarcostmap.CalendarCostMapEntity;
+import com.example.restservice.entity.costmap.CostMapEntity;
+import com.example.restservice.entity.networkmap.NetworkMapEntity;
 import com.example.restservice.repository.calendarcostmap.CalendarCostMapRepository;
 import com.example.restservice.repository.costmap.CostMapRepository;
 import com.example.restservice.repository.informationresourcedirectory.InformationResourceDirectoryRepository;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,12 +32,12 @@ public class BootstrapFromResourcesDirectory implements CommandLineRunner {
     //private static final String INFORMATION_RESOURCE_DIRECTORY_DIRECTORY = RESOURCES_DICECTORY + "/informationresourcedirectories";
     private static final String NETWORKMAPS_DIRECTORY = RESOURCES_DICECTORY + "/networkmaps";
     private static final String COSTMAP_DIRECTORY = RESOURCES_DICECTORY + "/costmaps";
-    //private static final String CALENDAR_COSTMAP_DIRECTORY = RESOURCES_DICECTORY + "/calendarcostmaps";
+    private static final String CALENDAR_COSTMAP_DIRECTORY = RESOURCES_DICECTORY + "/calendarcostmaps";
 
     //private List<InformationResourceDirectoryDTO> informationResourceDirectoryDTOList;
     private List<NetworkMapEntity> networkMapEntities;
     private List<CostMapEntity> costMapEntities;
-    //private List<CalendarCostMapDTO> calendarCostMapDTOList;
+    private List<CalendarCostMapEntity> calendarCostMapDTOList;
 
     private static final Logger logger = LoggerFactory.getLogger(BootstrapFromResourcesDirectory.class);
 
@@ -77,8 +79,8 @@ public class BootstrapFromResourcesDirectory implements CommandLineRunner {
         logger.info("Loading cost maps");
         costMapEntities = loadFilesAsObjectsByDepthSearch(COSTMAP_DIRECTORY, CostMapEntity.class);
 
-        //logger.info("Loading calendar cost maps");
-        //calendarCostMapDTOList = loadFilesAsObjectsByDepthSearch(CALENDAR_COSTMAP_DIRECTORY, CalendarCostMapDTO.class);
+        logger.info("Loading calendar cost maps");
+        calendarCostMapDTOList = loadFilesAsObjectsByDepthSearch(CALENDAR_COSTMAP_DIRECTORY, CalendarCostMapEntity.class);
     }
 
     private void saveResources() {
@@ -93,8 +95,8 @@ public class BootstrapFromResourcesDirectory implements CommandLineRunner {
         logger.info("Saving cost maps");
         costMapRepository.insertAll(costMapEntities);
 
-        //logger.info("Saving calendar cost maps");
-        //calendarCostMapRepository.insert(calendarCostMapDTOList);
+        logger.info("Saving calendar cost maps");
+        calendarCostMapRepository.insertAll(calendarCostMapDTOList);
     }
 
     private void configureObjectMapper() {

@@ -1,11 +1,10 @@
 {
-  "resourceId": "my-default-cost-map",
-  "uri" : "http://alto.example.com/costmap",
+  "id": "my-default-cost-map",
+  "costMode": "numerical",
+  "costMetric": "routingcost",
   "costMappingsEntities": [
     {
       "versionTag": "da65eca2eb7a10ce8b059740b0b2e3f8eb1d4785",
-      "costMode": "numerical",
-      "costMetric": "routingcost",
       "fromSrcCostsEntities" : [
         {
           "srcNode" : "PID1",

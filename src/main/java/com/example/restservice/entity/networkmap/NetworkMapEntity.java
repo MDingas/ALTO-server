@@ -1,5 +1,6 @@
-package com.example.restservice.entity;
+package com.example.restservice.entity.networkmap;
 
+import com.example.restservice.entity.ALTOResourceEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -9,36 +10,23 @@ import java.util.List;
 public class NetworkMapEntity implements ALTOResourceEntity {
 
     @Field("resource-id")
-    private String resourceId;
-
-    @Field("uri")
-    private String uri;
+    private String id;
 
     @Field("mappings")
     private List<NetworkMappingsEntity> networkMappingsEntities;
 
-    public NetworkMapEntity(String resourceId, String uri, List<NetworkMappingsEntity> networkMappingsEntities) {
-        this.resourceId = resourceId;
-        this.uri = uri;
+    public NetworkMapEntity(String id, List<NetworkMappingsEntity> networkMappingsEntities) {
+        this.id = id;
         this.networkMappingsEntities = networkMappingsEntities;
     }
 
     @Override
-    public String getResourceId() {
-        return resourceId;
+    public String getId() {
+        return id;
     }
 
-    public void setResourceId(String resourceId) {
-        this.resourceId = resourceId;
-    }
-
-    @Override
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public List<NetworkMappingsEntity> getNetworkMappingsEntities() {

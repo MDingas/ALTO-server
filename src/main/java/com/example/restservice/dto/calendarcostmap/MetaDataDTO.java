@@ -1,7 +1,7 @@
 package com.example.restservice.dto.calendarcostmap;
 
 import com.example.restservice.dto.VersionTagDTO;
-import com.example.restservice.dto.costmap.CostTypeDTO;
+import com.example.restservice.dto.CostTypeDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -25,12 +25,12 @@ public class MetaDataDTO {
 
     @NotNull
     @Field("calendar-response-attributes")
-    private List<CalendarAttributesDTO> calendarAttributesDTO;
+    private CalendarAttributesDTO calendarAttributesDTO;
 
     public MetaDataDTO(@JsonProperty(value = "vtag", required = true) VersionTagDTO versionTagDTO,
                        @JsonProperty(value = "dependent-vtags", required = false) List<VersionTagDTO> dependentVtagList,
                        @JsonProperty(value = "cost-type", required = true) CostTypeDTO costTypeDTO,
-                       @JsonProperty(value = "calendar-response-attributes", required = true) List<CalendarAttributesDTO> calendarAttributesDTO) {
+                       @JsonProperty(value = "calendar-response-attributes", required = true) CalendarAttributesDTO calendarAttributesDTO) {
         this.versionTagDTO = versionTagDTO;
         this.dependentVtagList = dependentVtagList;
         this.costTypeDTO = costTypeDTO;
@@ -61,11 +61,11 @@ public class MetaDataDTO {
         this.costTypeDTO = costTypeDTO;
    }
 
-    public List<CalendarAttributesDTO> getCalendarAttributesDTO() {
+    public CalendarAttributesDTO getCalendarAttributesDTO() {
         return calendarAttributesDTO;
     }
 
-    public void setCalendarAttributesDTO(List<CalendarAttributesDTO> calendarAttributesDTO) {
+    public void setCalendarAttributesDTO(CalendarAttributesDTO calendarAttributesDTO) {
         this.calendarAttributesDTO = calendarAttributesDTO;
     }
 }

@@ -16,6 +16,7 @@ public class MainExceptionHandler {
     @ExceptionHandler({Exception.class})
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public ErrorMessageDTO handleAllOtherExceptions(Exception ex) {
+        ex.printStackTrace();
         return new ErrorMessageDTO(INTERNAL_SERVER_ERROR.value(), ex.getMessage());
     }
 

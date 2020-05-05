@@ -1,5 +1,6 @@
 package com.example.restservice.dto.costmap;
 
+import com.example.restservice.dto.CostTypeDTO;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.mongodb.core.mapping.Field;
