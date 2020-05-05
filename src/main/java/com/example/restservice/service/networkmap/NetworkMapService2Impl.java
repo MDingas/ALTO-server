@@ -5,7 +5,7 @@ import com.example.restservice.dto.networkmap.NetworkMapFilterDTO;
 import com.example.restservice.entity.NetworkMapEntity;
 import com.example.restservice.mapper.NetworkMapMapperImpl;
 import com.example.restservice.repository.networkmap.NetworkMapRepository;
-import com.example.restservice.service.ALTOResourceBaseGenericRepoService;
+import com.example.restservice.service.ALTOGenericRepoResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import javax.ws.rs.NotFoundException;
 import java.util.List;
 
 @Component
-public class NetworkMapService2Impl extends ALTOResourceBaseGenericRepoService<NetworkMapEntity, NetworkMapDTO> implements NetworkMapService {
+public class NetworkMapService2Impl extends ALTOGenericRepoResourceService<NetworkMapEntity, NetworkMapDTO> implements NetworkMapService {
 
     private NetworkMapRepository networkMapRepository;
 

@@ -3,19 +3,18 @@ package com.example.restservice.service;
 import com.example.restservice.entity.ALTOResourceEntity;
 import com.example.restservice.mapper.ALTOMapper;
 import com.example.restservice.repository.ALTOResourceBaseRepository;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ALTOResourceBaseGenericRepoService<T extends ALTOResourceEntity, S> implements ALTOResourceBaseService<S> {
+public class ALTOGenericRepoResourceService<T extends ALTOResourceEntity, S> implements ALTOResourceService<S> {
 
     protected ALTOResourceBaseRepository<T> altoResourceBaseRepository;
     protected ALTOMapper<T, S> altoMapper;
 
-    public ALTOResourceBaseGenericRepoService(ALTOResourceBaseRepository<T> altoResourceBaseRepository,
-                                              ALTOMapper<T, S> altoMapper) {
+    public ALTOGenericRepoResourceService(ALTOResourceBaseRepository<T> altoResourceBaseRepository,
+                                          ALTOMapper<T, S> altoMapper) {
         this.altoResourceBaseRepository = altoResourceBaseRepository;
         this.altoMapper = altoMapper;
     }
