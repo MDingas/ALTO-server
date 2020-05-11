@@ -2,12 +2,10 @@ package com.example.restservice.repository.costmap;
 
 import com.example.restservice.entity.costmap.CostMapEntity;
 import com.example.restservice.repository.ALTOResourceMongoRepository;
+import com.mongodb.BasicDBObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.Fields;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
@@ -18,99 +16,146 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 @Repository
 public class CostMapMongoRepository extends ALTOResourceMongoRepository<CostMapEntity> implements CostMapRepository {
 
+    private static String[] resourceSpecificFields = {"fromSrcCostEntities"};
+
     @Autowired
     public CostMapMongoRepository(MongoTemplate mongoTemplate) {
         super(CostMapEntity.class, mongoTemplate);
     }
 
-    private List<AggregationOperation> buildProjectCostSrcAndDstAndSingleVersion(List<String> srcPIDs, List<String> dstPIDs, String costMode, String costMetric) {
+    private Optional<MatchOperation> buildMatchCostTypeOperation(CostMapProjection costMapProjection) {
+        Optional<String> optionalCostMode = costMapProjection.getCostMode();
+        Optional<String> optionalCostMetric = costMapProjection.getCostMetric();
+
+        if (optionalCostMode.isPresent() && optionalCostMetric.isPresent()) {
+            return Optional.of(match(new Criteria().
+                    andOperator(
+                            Criteria.where("metaInfoEntity.costMode").is(optionalCostMode.get()),
+                            Criteria.where("metaInfoEntity.costMetric").is(optionalCostMetric.get()))
+            ));
+        } else if (optionalCostMode.isPresent() && !optionalCostMetric.isPresent()) {
+            return Optional.of(match(Criteria.where("metaInfoEntity.costMode").is(optionalCostMode.get())));
+
+        } else if (!optionalCostMode.isPresent() && optionalCostMetric.isPresent()){
+            return Optional.of(match(Criteria.where("metaInfoEntity.costMetric").is(optionalCostMetric.get())));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private Optional<List<AggregationOperation>> buildProjectionOfSrcAndDstPIDs(CostMapProjection costMapProjection) {
+        Optional<List<String>> optionalSrcPIDs = costMapProjection.getSrcPIDs();
+        Optional<List<String>> optionalDstPIDs = costMapProjection.getDstPIDs();
+
+        if (!optionalSrcPIDs.isPresent() && !optionalDstPIDs.isPresent()) {
+            return Optional.empty();
+        } else {
+            List<AggregationOperation> aggregationOperations = new ArrayList<>();
+
+            aggregationOperations.add(unwind("mappingEntity.fromSrcCostEntities"));
+
+            optionalSrcPIDs.ifPresent(srcPIDs -> aggregationOperations.add(match(Criteria.where("mappingEntity.fromSrcCostEntities.srcNode").in(srcPIDs))));
+
+            aggregationOperations.add(unwind("mappingEntity.fromSrcCostEntities.dstCostEntities"));
+
+            optionalDstPIDs.ifPresent(dstPIDs -> aggregationOperations.add(match(Criteria.where("mappingEntity.fromSrcCostEntities.dstCostEntities.dstNode").in(dstPIDs))));
+
+            aggregationOperations.add(
+                    group("mappingEntity.fromSrcCostEntities.srcNode")
+                            .first("metaInfoEntity").as("metaInfoEntity")
+                            .first("mappingEntity.versionTag").as("versionTag")
+                            .push("mappingEntity.fromSrcCostEntities.dstCostEntities").as("dstCostEntities")
+            );
+
+            aggregationOperations.add(
+                    project("metaInfoEntity", "versionTag")
+                            .andExclude("_id")
+                            .and("_id").as("srcNode")
+                            .and("dstCostEntities").as("dstCostEntities")
+            );
+
+            aggregationOperations.add(
+                    group()
+                            .first("metaInfoEntity").as("metaInfoEntity")
+                            .first("versionTag").as("versionTag")
+                            .push(new BasicDBObject("srcNode", "$srcNode")
+                                    .append("dstCostEntities", "$dstCostEntities"))
+                                       .as("fromSrcCostEntities")
+            );
+
+            return Optional.of(aggregationOperations);
+        }
+    }
+
+    private Optional<List<AggregationOperation>> givenSingleResourceBuildProjectionOfCostSrcAndDstAndSingleVersion(CostMapProjection costMapProjection) {
+        boolean were_operations_added = false;
+
         List<AggregationOperation> operations = new ArrayList<>();
 
-        operations.add(
-                match(new Criteria().
-                        andOperator(
-                                Criteria.where("mappings.cost-mode").is(costMode),
-                                Criteria.where("mappings.cost-metric").is(costMetric))));
+        Optional<MatchOperation> optionalMatchCostTypeOperation = buildMatchCostTypeOperation(costMapProjection);
 
-        operations.add(unwind("mappings.from-src-costs"));
-
-        if (!srcPIDs.isEmpty()) {
-            operations.add(match(Criteria.where("mappings.from-src-costs.src-node").in(srcPIDs)));
+        if(optionalMatchCostTypeOperation.isPresent()) {
+            operations.add(optionalMatchCostTypeOperation.get());
+            were_operations_added = true;
         }
 
-        operations.add(unwind("mappings.from-src-costs.dst-costs"));
+        Optional<List<AggregationOperation>> optionalCostSrcDstProjectionOperations = buildProjectionOfSrcAndDstPIDs(costMapProjection);
 
-        if (!dstPIDs.isEmpty()) {
-            operations.add(match(Criteria.where("mappings.from-src-costs.dst-costs.dst-node").in(dstPIDs)));
+        if (optionalCostSrcDstProjectionOperations.isPresent()) {
+            operations.addAll(optionalCostSrcDstProjectionOperations.get());
+            were_operations_added = true;
         }
 
-        operations.add(
-                group("mappings.from-src-costs.src-node")
-                    .first("mappings.version-tag").as("version-tag")
-                    .first("resource-id").as("resource-id")
-                    .first("mappings.from-src-costs.src-node").as("src-node")
-                    .first("uri").as("uri")
-                    .first("mappings.cost-mode").as("cost-mode")
-                    .first("mappings.cost-metric").as("cost-metric")
-                    .push("mappings.from-src-costs.dst-costs").as("dst-costs")
-        );
+        if (were_operations_added) {
+            return Optional.of(operations);
+        } else {
+            return Optional.empty();
+        }
+    }
 
-        operations.add(
-                project("resource-id", "version-tag", "uri", "cost-mode", "cost-metric")
-                    .andExclude("_id")
-                    .and("from-src-costs").nested(Fields.fields("src-node", "dst-costs"))
-        );
+    private List<AggregationOperation> buildFindResourceAggregationOperations(String resourceId, String versionTag, CostMapProjection projection) {
+        List<AggregationOperation> aggregationOperations = new ArrayList<>();
 
-        operations.add(
-                group("resource-id")
-                    .first("resource-id").as("resource-id")
-                    .first("uri").as("uri")
-                    .first("cost-mode").as("cost-mode")
-                    .first("cost-metric").as("cost-metric")
-                    .first("version-tag").as("version-tag")
-                    .push("from-src-costs").as("from-src-costs"));
+        if (versionTag != null) {
+            aggregationOperations.addAll(buildGetVersionOfResourceAggregationOperations(resourceId, versionTag));
+        } else {
+            aggregationOperations.addAll(buildGetLatestVersionOfResourceAggregationOperations(resourceId));
+        }
 
-        operations.add(
-                project("uri")
-                    .andExclude("_id")
-                    .and("_id").as("resource-id")
-                    .and("mappings").nested(Fields.fields("version-tag","cost-mode","cost-metric","from-src-costs"))
-        );
+        Optional<List<AggregationOperation>> optionalProjectionAggregations = givenSingleResourceBuildProjectionOfCostSrcAndDstAndSingleVersion(projection);
 
-        operations.add(
-                group("resource-id")
-                    .first("resource-id").as("resource-id")
-                    .push("mappings").as("mappings")
-        );
+        if (optionalProjectionAggregations.isPresent()) {
+            addAggregationOperationsWithProjection(aggregationOperations, optionalProjectionAggregations.get(), resourceSpecificFields);
+        } else {
+            addAggregationOperationsWithoutProjections(aggregationOperations);
+        }
 
-        return operations;
+        return aggregationOperations;
+    }
+
+    private List<AggregationOperation> buildFindResourceAggregationOperations(String resourceId, CostMapProjection projection) {
+        return buildFindResourceAggregationOperations(resourceId, null, projection);
     }
 
     @Override
-    public Optional<CostMapEntity> findVersionOfResource(String resourceId, String versionTag, List<String> srcPIDs, List<String> dstPIDs, String costMode, String costMetric) {
-        try {
-            List<AggregationOperation> operations = new ArrayList<>(buildVersionOfResourceAggregationOperationList(resourceId, versionTag));
-            operations.addAll(buildProjectCostSrcAndDstAndSingleVersion(srcPIDs, dstPIDs, costMode, costMetric));
+    public Optional<CostMapEntity> findVersionOfResourceWithProjection(String resourceId, String versionTag, CostMapProjection costMapProjection) {
+        List<AggregationOperation> aggregationOperations = buildFindResourceAggregationOperations(resourceId, versionTag, costMapProjection);
 
-            Aggregation aggregation = newAggregation(operations);
+        TypedAggregation<CostMapEntity> aggregation = newAggregation(CostMapEntity.class, aggregationOperations);
 
-            AggregationResults<CostMapEntity> aggregationResults = mongoTemplate.aggregate(aggregation, "CostMaps", CostMapEntity.class);
+        CostMapEntity costMapEntity = findResourceViaAggregation(aggregation);
 
-            List<CostMapEntity> costMapEntityList = aggregationResults.getMappedResults();
-
-            if (costMapEntityList.isEmpty()) {
-                return Optional.empty();
-            } else {
-                return Optional.of(costMapEntityList.get(0));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return Optional.ofNullable(costMapEntity);
     }
 
     @Override
-    public Optional<CostMapEntity> findLatestVersionOfResource(String resourceId, List<String> srcPIDs, List<String> dstPIDs, String costMode, String costMetric) {
-        return Optional.empty();
+    public Optional<CostMapEntity> findLatestVersionOfResourceWithProjection(String resourceId, CostMapProjection costMapProjection) {
+        List<AggregationOperation> aggregationOperations = buildFindResourceAggregationOperations(resourceId, costMapProjection);
+
+        TypedAggregation<CostMapEntity> aggregation = newAggregation(CostMapEntity.class, aggregationOperations);
+
+        CostMapEntity costMapEntity = findResourceViaAggregation(aggregation);
+
+        return Optional.ofNullable(costMapEntity);
     }
 }
