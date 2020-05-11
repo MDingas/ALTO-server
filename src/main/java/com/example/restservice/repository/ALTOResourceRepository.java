@@ -5,11 +5,16 @@ import com.example.restservice.entity.ALTOResourceEntity;
 import java.util.List;
 import java.util.Optional;
 
-public interface ALTOResourceRepository<ALTOResourceEntityType extends ALTOResourceEntity> {
+public interface ALTOResourceRepository<ALTOResourceEntityType extends ALTOResourceEntity, ALTOResourceProjection> {
     Optional<ALTOResourceEntityType> findVersionOfResource(String id, String tag);
-    Optional<ALTOResourceEntityType> findAllVersionsOfResource(String id);
+    Optional<ALTOResourceEntityType> findVersionOfResourceWithProjection(String id, String tag, ALTOResourceProjection projection);
+
     Optional<ALTOResourceEntityType> findLatestVersionOfResource(String id);
+    Optional<ALTOResourceEntityType> findLatestVersionOfResourceWithProjection(String id, ALTOResourceProjection projection);
+
     List<ALTOResourceEntityType> findAll();
-    void insertAll(List<ALTOResourceEntityType> t);
+
+    void insert(ALTOResourceEntityType resource);
+    void insertAll(List<ALTOResourceEntityType> resources);
 }
 

@@ -5,16 +5,13 @@ import com.example.restservice.dto.CostModeDTO;
 import com.example.restservice.dto.CostTypeDTO;
 import com.example.restservice.dto.VersionTagDTO;
 import com.example.restservice.dto.costmap.*;
-import com.example.restservice.entity.costmap.CostMapEntity;
-import com.example.restservice.entity.costmap.CostMappingsEntity;
-import com.example.restservice.entity.costmap.DstCostsEntity;
-import com.example.restservice.entity.costmap.FromSrcCostsEntity;
+import com.example.restservice.entity.costmap.*;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component
-public class CostMapMapper implements ALTOMapper<CostMapEntity, CostMapDTO> {
+public class CostMapMapper implements ALTOResourceMapper<CostMapEntity, CostMapDTO> {
 
     private Map<String, Map<String, Integer>> buildSrcToDstCostMap(List<FromSrcCostsEntity> fromSrcCostsEntities) {
         Map<String, Map<String, Integer>> srcToDstCostMap = new HashMap<>();
@@ -25,11 +22,11 @@ public class CostMapMapper implements ALTOMapper<CostMapEntity, CostMapDTO> {
 
             String srcNode = fromSrcCostsEntity.getSrcNode();
 
-            List<DstCostsEntity> dstCostsEntities = fromSrcCostsEntity.getDstCostsEntities();
+            List<DstCostsEntity> dstCostsEntities = fromSrcCostsEntity.getDstCostEntities();
 
             for (DstCostsEntity dstCostsEntity : dstCostsEntities) {
                 String dstNode = dstCostsEntity.getDstNode();
-                Integer costValue = dstCostsEntity.getValue();
+                Integer costValue = dstCostsEntity.getCostValue();
                 dstCosts.put(dstNode, costValue);
             }
 
@@ -48,7 +45,7 @@ public class CostMapMapper implements ALTOMapper<CostMapEntity, CostMapDTO> {
         CostTypeDTO costTypeDTO = new CostTypeDTO(CostModeDTO.fromString(costMode), CostMetricDTO.fromString(costMetric), null);
         VersionTagDTO versionTagDTO = new VersionTagDTO(resourceId, versionTag);
         MetaDataDTO metaDataDTO = new MetaDataDTO(versionTagDTO, null, costTypeDTO);
-        Map<String, Map<String, Integer>> costMappings = buildSrcToDstCostMap(costMappingsEntity.getFromSrcCostsEntities());
+        Map<String, Map<String, Integer>> costMappings = buildSrcToDstCostMap(costMappingsEntity.getFromSrcCostEntities());
 
         return new CostMapDTO(metaDataDTO, costMappings);
     }
@@ -68,26 +65,25 @@ public class CostMapMapper implements ALTOMapper<CostMapEntity, CostMapDTO> {
 
     @Override
     public List<CostMapDTO> mapAllVersions(CostMapEntity costMapEntity) {
-        String resourceId = costMapEntity.getId();
-        String costMode = costMapEntity.getCostMode();
-        String costMetric = costMapEntity.getCostMetric();
+        MetaInfoEntity metaInfoEntity = costMapEntity.getMetaInfoEntity();
 
-        List<CostMappingsEntity> costMappingsEntities = costMapEntity.getCostMappingsEntities();
+        String resourceId = metaInfoEntity.getResourceId();
+        String costMode = metaInfoEntity.getCostMode();
+        String costMetric = metaInfoEntity.getCostMetric();
+
+        List<CostMappingsEntity> costMappingsEntities = costMapEntity.getMappingEntities();
         return buildCostMapDTOs(resourceId, costMode, costMetric, costMappingsEntities);
     }
 
     @Override
     public CostMapDTO mapVersionAtPosition(CostMapEntity costMapEntity, int index) {
-        String resourceId = costMapEntity.getId();
-        String costMode = costMapEntity.getCostMode();
-        String costMetric = costMapEntity.getCostMetric();
+        MetaInfoEntity metaInfoEntity = costMapEntity.getMetaInfoEntity();
 
-        System.out.println(resourceId);
-        System.out.println(costMode);
-        System.out.println(costMetric);
-        System.out.println(costMapEntity.getCostMappingsEntities());
+        String resourceId = metaInfoEntity.getResourceId();
+        String costMode = metaInfoEntity.getCostMode();
+        String costMetric = metaInfoEntity.getCostMetric();
 
-        List<CostMappingsEntity> costMappingsEntities = costMapEntity.getCostMappingsEntities();
+        List<CostMappingsEntity> costMappingsEntities = costMapEntity.getMappingEntities();
         CostMappingsEntity firstCostMappingsEntity = costMappingsEntities.get(0);
         return buildCostMapDTO(resourceId, costMode, costMetric, firstCostMappingsEntity);
     }

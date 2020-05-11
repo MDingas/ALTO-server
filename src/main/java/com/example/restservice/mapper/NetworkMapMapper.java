@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class NetworkMapMapper implements ALTOMapper<NetworkMapEntity, NetworkMapDTO> {
+public class NetworkMapMapper implements ALTOResourceMapper<NetworkMapEntity, NetworkMapDTO> {
 
     private NetworkMapDTO buildNetworkMapDTO(String resourceId, NetworkMappingsEntity networkMappingsEntity) {
         String versionTag = networkMappingsEntity.getVersionTag();
@@ -56,7 +56,7 @@ public class NetworkMapMapper implements ALTOMapper<NetworkMapEntity, NetworkMap
 
     @Override
     public List<NetworkMapDTO> mapAllVersions(NetworkMapEntity networkMapEntity) {
-        List<NetworkMappingsEntity> networkMappingsEntities = networkMapEntity.getNetworkMappingsEntities();
+        List<NetworkMappingsEntity> networkMappingsEntities = networkMapEntity.getMappingEntities();
 
         String resourceId = networkMapEntity.getId();
 
@@ -67,7 +67,7 @@ public class NetworkMapMapper implements ALTOMapper<NetworkMapEntity, NetworkMap
     public NetworkMapDTO mapVersionAtPosition(NetworkMapEntity networkMapEntity, int index) {
         String resourceId = networkMapEntity.getId();
 
-        List<NetworkMappingsEntity> networkMappingsEntities = networkMapEntity.getNetworkMappingsEntities();
+        List<NetworkMappingsEntity> networkMappingsEntities = networkMapEntity.getMappingEntities();
 
         NetworkMappingsEntity networkMappingsEntity = networkMappingsEntities.get(index);
         return buildNetworkMapDTO(resourceId, networkMappingsEntity);
