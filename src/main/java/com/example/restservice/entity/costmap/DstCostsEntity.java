@@ -1,18 +1,15 @@
 package com.example.restservice.entity.costmap;
 
-import org.springframework.data.mongodb.core.mapping.Field;
 
 public class DstCostsEntity {
 
-    @Field("dst-node")
     private String dstNode;
 
-    @Field("cost-value")
-    private Integer value;
+    private Integer costValue;
 
-    public DstCostsEntity(String dstNode, Integer value) {
+    public DstCostsEntity(String dstNode, Integer costValue) {
         this.dstNode = dstNode;
-        this.value = value;
+        this.costValue = costValue;
     }
 
     public String getDstNode() {
@@ -23,11 +20,11 @@ public class DstCostsEntity {
         this.dstNode = dstNode;
     }
 
-    public Integer getValue() {
-        return value;
+    public Integer getCostValue() {
+        return costValue;
     }
 
-    public void setValue(Integer value) {
-        this.value = value;
+    public void setValue(Integer costValue) {
+        this.costValue = costValue;
     }
 }

@@ -8,10 +8,8 @@ import java.util.List;
 @Document
 public class NetworkMappingsEntity {
 
-    @Field("version-tag")
     private String versionTag;
 
-    @Field("address-aggregations")
     private List<AddressAggregationEntity> addressAggregationEntities;
 
     public NetworkMappingsEntity(String versionTag, List<AddressAggregationEntity> addressAggregationEntities) {

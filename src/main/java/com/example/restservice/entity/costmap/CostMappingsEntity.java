@@ -1,21 +1,17 @@
 package com.example.restservice.entity.costmap;
 
-import org.springframework.data.mongodb.core.mapping.Field;
-
 import java.util.List;
 
 public class CostMappingsEntity {
 
-    @Field("version-tag")
     private String versionTag;
 
-    @Field("from-src-costs")
-    private List<FromSrcCostsEntity> fromSrcCostsEntities;
+    private List<FromSrcCostsEntity> fromSrcCostEntities;
 
     public CostMappingsEntity(String versionTag,
-                              List<FromSrcCostsEntity> fromSrcCostsEntities) {
+                              List<FromSrcCostsEntity> fromSrcCostEntities) {
         this.versionTag = versionTag;
-        this.fromSrcCostsEntities = fromSrcCostsEntities;
+        this.fromSrcCostEntities = fromSrcCostEntities;
     }
 
     public String getVersionTag() {
@@ -26,11 +22,11 @@ public class CostMappingsEntity {
         this.versionTag = versionTag;
     }
 
-    public List<FromSrcCostsEntity> getFromSrcCostsEntities() {
-        return fromSrcCostsEntities;
+    public List<FromSrcCostsEntity> getFromSrcCostEntities() {
+        return fromSrcCostEntities;
     }
 
-    public void setFromSrcCostsEntities(List<FromSrcCostsEntity> fromSrcCostsEntities) {
-        this.fromSrcCostsEntities = fromSrcCostsEntities;
+    public void setFromSrcCostEntities(List<FromSrcCostsEntity> fromSrcCostEntities) {
+        this.fromSrcCostEntities = fromSrcCostEntities;
     }
 }

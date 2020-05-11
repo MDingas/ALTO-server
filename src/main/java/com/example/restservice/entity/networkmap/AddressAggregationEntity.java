@@ -1,21 +1,16 @@
 package com.example.restservice.entity.networkmap;
 
-import org.springframework.data.mongodb.core.mapping.Field;
-
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
 public class AddressAggregationEntity {
 
-    @Field("pid")
     @NotNull
     private String pid;
 
-    @Field("ipv4-addresses")
     private List<String> ipv4AddressList;
 
-    @Field("ipv6-addresses")
     private List<String> ipv6AddressList;
 
     public AddressAggregationEntity(String pid, List<String> ipv4AddressList, List<String> ipv6AddressList) {
