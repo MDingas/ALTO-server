@@ -12,8 +12,9 @@ import javax.ws.rs.QueryParam;
 import java.util.List;
 
 public class ALTOResourceCRUDController<ALTOResourceDTOType,
-                                ALTOResourceFilterDTOType,
-                                ServiceType extends ALTOResourceService<ALTOResourceDTOType, ALTOResourceFilterDTOType>> {
+                                        ALTOResourceFilterDTOType,
+                                        ServiceType extends
+                                                ALTOResourceService<ALTOResourceDTOType, ALTOResourceFilterDTOType>> {
 
     protected ServiceType service;
     protected String resourceName;
