@@ -2,38 +2,39 @@ package com.example.restservice.entity.networkmap;
 
 import com.example.restservice.entity.ALTOResourceEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
 @Document(collection = "NetworkMaps")
 public class NetworkMapEntity implements ALTOResourceEntity {
 
-    @Field("resource-id")
-    private String id;
+    private MetaInfoEntity metaInfoEntity;
 
-    @Field("mappings")
-    private List<NetworkMappingsEntity> networkMappingsEntities;
+    private List<NetworkMappingsEntity> mappingEntities;
 
-    public NetworkMapEntity(String id, List<NetworkMappingsEntity> networkMappingsEntities) {
-        this.id = id;
-        this.networkMappingsEntities = networkMappingsEntities;
+    public NetworkMapEntity(MetaInfoEntity metaInfoEntity, List<NetworkMappingsEntity> mappingEntities) {
+        this.metaInfoEntity = metaInfoEntity;
+        this.mappingEntities = mappingEntities;
+    }
+
+    public MetaInfoEntity getMetaInfoEntity() {
+        return metaInfoEntity;
+    }
+
+    public void setMetaInfoEntity(MetaInfoEntity metaInfoEntity) {
+        this.metaInfoEntity = metaInfoEntity;
+    }
+
+    public List<NetworkMappingsEntity> getMappingEntities() {
+        return mappingEntities;
+    }
+
+    public void setMappingEntities(List<NetworkMappingsEntity> mappingEntities) {
+        this.mappingEntities = mappingEntities;
     }
 
     @Override
     public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public List<NetworkMappingsEntity> getNetworkMappingsEntities() {
-        return networkMappingsEntities;
-    }
-
-    public void setNetworkMappingsEntities(List<NetworkMappingsEntity> networkMappingsEntities) {
-        this.networkMappingsEntities = networkMappingsEntities;
+        return metaInfoEntity.getResourceId();
     }
 }
