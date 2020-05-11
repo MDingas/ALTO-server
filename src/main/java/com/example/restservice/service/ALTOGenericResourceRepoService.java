@@ -1,7 +1,7 @@
 package com.example.restservice.service;
 
 import com.example.restservice.entity.ALTOResourceEntity;
-import com.example.restservice.mapper.ALTOMapper;
+import com.example.restservice.mapper.ALTOResourceMapper;
 import com.example.restservice.repository.ALTOResourceRepository;
 
 import javax.ws.rs.NotFoundException;
@@ -9,16 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ALTOResourceGenericRepoService<ALTOResourceEntityType extends ALTOResourceEntity,
+public class ALTOGenericResourceRepoService<ALTOResourceEntityType extends ALTOResourceEntity,
+                                            ALTOProjectionType,
                                             ALTOResourceDTOType,
-                                            ALTOResourceRepositoryType extends ALTOResourceRepository<ALTOResourceEntityType>,
-                                            ALTOResourceMapperType extends ALTOMapper<ALTOResourceEntityType, ALTOResourceDTOType>> {
+                                            ALTOResourceRepositoryType extends ALTOResourceRepository<ALTOResourceEntityType, ALTOProjectionType>,
+                                            ALTOResourceMapperType extends ALTOResourceMapper<ALTOResourceEntityType, ALTOResourceDTOType>> {
 
     protected ALTOResourceRepositoryType resourceRepository;
     protected ALTOResourceMapperType resourceMapper;
 
 
-    public ALTOResourceGenericRepoService(ALTOResourceRepositoryType resourceRepository,
+    public ALTOGenericResourceRepoService(ALTOResourceRepositoryType resourceRepository,
                                           ALTOResourceMapperType resourceMapper) {
         this.resourceRepository = resourceRepository;
         this.resourceMapper = resourceMapper;
