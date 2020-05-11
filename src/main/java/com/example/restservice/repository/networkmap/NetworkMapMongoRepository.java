@@ -4,75 +4,85 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 import com.example.restservice.entity.networkmap.NetworkMapEntity;
 import com.example.restservice.repository.ALTOResourceMongoRepository;
-import com.mongodb.BasicDBObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class NetworkMapMongoRepository extends ALTOResourceMongoRepository<NetworkMapEntity> implements NetworkMapRepository {
+
+    private static String[] resourceSpecificFields = {"addressAggregationEntities"};
 
     @Autowired
     public NetworkMapMongoRepository(MongoTemplate mongoTemplate) {
         super(NetworkMapEntity.class, mongoTemplate);
     }
 
-    private List<AggregationOperation> buildProjectSrcPidsAndSingleVersion(List<String> srcPids) {
-        return Arrays.asList(
-                unwind("mappings.address-aggregations"),
-                match(Criteria.where("mappings.address-aggregations.pid").in(srcPids)),
-                group(getResourceProjectionFields())
-                        .first("mappings.version-tag").as("version-tag")
-                        .push("mappings.address-aggregations").as("address-aggregations"),
-                group("_id._id")
-                        .first("_id.resource-id").as("resource-id")
-                        .push(new BasicDBObject("version-tag", "$version-tag")
-                                .append("address-aggregations", "$address-aggregations")).as("mappings")
-        );
-
+    private Optional<List<AggregationOperation>> givenSingleVersionOfResourceBuildProjectionAggregationOperations(NetworkMapProjection networkMapProjection) {
+        if (networkMapProjection.getSrcPIDs().isPresent()) {
+            return Optional.of(
+                    Arrays.asList(
+                        unwind("mappingEntity.addressAggregationEntities"),
+                        match(Criteria.where("mappingEntity.addressAggregationEntities.pid").in(networkMapProjection.getSrcPIDs().get())),
+                        group()
+                            .first("metaInfoEntity").as("metaInfoEntity")
+                            .first("mappingEntity.versionTag").as("versionTag")
+                            .push("mappingEntity.addressAggregationEntities").as("addressAggregationEntities")
+                    )
+            );
+        } else {
+            return Optional.empty();
+        }
     }
 
-    public Optional<NetworkMapEntity> findVersionOfResource(String resourceId, String versionTag, List<String> srcPIDs) {
-        List<AggregationOperation> operations = new ArrayList<>(buildVersionOfResourceAggregationOperationList(resourceId, versionTag));
-        operations.addAll(buildProjectSrcPidsAndSingleVersion(srcPIDs));
+    private List<AggregationOperation> buildFindResourceAggregationOperations(String resourceId, String versionTag, NetworkMapProjection projection) {
+        List<AggregationOperation> aggregationOperations = new ArrayList<>();
 
-        Aggregation aggregation = newAggregation(operations);
-
-        AggregationResults<NetworkMapEntity> aggregationResults = mongoTemplate.aggregate(aggregation, "NetworkMaps", NetworkMapEntity.class);
-
-        List<NetworkMapEntity> networkMapEntityList = aggregationResults.getMappedResults();
-
-        if (networkMapEntityList.isEmpty()) {
-            return Optional.empty();
+        if (versionTag != null) {
+            aggregationOperations.addAll(buildGetVersionOfResourceAggregationOperations(resourceId, versionTag));
         } else {
-            return Optional.of(networkMapEntityList.get(0));
+            aggregationOperations.addAll(buildGetLatestVersionOfResourceAggregationOperations(resourceId));
         }
+
+        Optional<List<AggregationOperation>> optionalPIDProjectionAggregations = givenSingleVersionOfResourceBuildProjectionAggregationOperations(projection);
+
+        if (optionalPIDProjectionAggregations.isPresent()) {
+            addAggregationOperationsWithProjection(aggregationOperations, optionalPIDProjectionAggregations.get(), resourceSpecificFields);
+        } else {
+            addAggregationOperationsWithoutProjections(aggregationOperations);
+        }
+
+        return aggregationOperations;
+    }
+
+    private List<AggregationOperation> buildFindResourceAggregationOperations(String resourceId, NetworkMapProjection projection) {
+        return buildFindResourceAggregationOperations(resourceId, null, projection);
     }
 
     @Override
-    public Optional<NetworkMapEntity> findLatestVersionOfResource(String resourceId, List<String> srcPIDs) {
-        List<AggregationOperation> operations = new ArrayList<>(buildLatestVersionOfResourceAggregationOperationList(resourceId));
-        operations.addAll(buildProjectSrcPidsAndSingleVersion(srcPIDs));
+    public Optional<NetworkMapEntity> findVersionOfResourceWithProjection(String resourceId, String versionTag, NetworkMapProjection networkMapProjection) {
+        List<AggregationOperation> aggregationOperations = buildFindResourceAggregationOperations(resourceId, versionTag, networkMapProjection);
 
-        Aggregation aggregation = newAggregation(operations);
+        TypedAggregation<NetworkMapEntity> aggregation = newAggregation(NetworkMapEntity.class, aggregationOperations);
 
-        AggregationResults<NetworkMapEntity> aggregationResults = mongoTemplate.aggregate(aggregation, "NetworkMaps", NetworkMapEntity.class);
+        NetworkMapEntity networkMapEntity = findResourceViaAggregation(aggregation);
 
-        List<NetworkMapEntity> networkMapEntityList = aggregationResults.getMappedResults();
+        return Optional.ofNullable(networkMapEntity);
+    }
 
-        if (networkMapEntityList.isEmpty()) {
-            return Optional.empty();
-        } else {
-            return Optional.of(networkMapEntityList.get(0));
-        }
+    @Override
+    public Optional<NetworkMapEntity> findLatestVersionOfResourceWithProjection(String resourceId, NetworkMapProjection networkMapProjection) {
+        List<AggregationOperation> aggregationOperations = buildFindResourceAggregationOperations(resourceId, networkMapProjection);
+
+        TypedAggregation<NetworkMapEntity> aggregation = newAggregation(NetworkMapEntity.class, aggregationOperations);
+
+        NetworkMapEntity networkMapEntity = findResourceViaAggregation(aggregation);
+
+        return Optional.ofNullable(networkMapEntity);
     }
 }
