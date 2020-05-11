@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 
 public class CostMapFilterDTO {
 
@@ -19,7 +20,7 @@ public class CostMapFilterDTO {
 
     @JsonCreator
     public CostMapFilterDTO(@JsonProperty(value = "cost-type", required = true) CostTypeDTO costTypeDTO,
-                            @JsonProperty(value = "pids", required = true) SrcDstMappingsDTO srcDstMappingsDTO) {
+                            @JsonProperty(value = "pids", required = false) SrcDstMappingsDTO srcDstMappingsDTO) {
         this.costTypeDTO = costTypeDTO;
         this.srcDstMappings = srcDstMappingsDTO;
     }
@@ -32,8 +33,8 @@ public class CostMapFilterDTO {
         this.costTypeDTO = costTypeDTO;
     }
 
-    public SrcDstMappingsDTO getSrcDstMappings() {
-        return srcDstMappings;
+    public Optional<SrcDstMappingsDTO> getSrcDstMappings() {
+        return Optional.ofNullable(srcDstMappings);
     }
 
     public void setSrcDstMappings(SrcDstMappingsDTO srcDstMappings) {
